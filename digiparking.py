@@ -22,6 +22,13 @@ def cover ():
 def enter (): 
     enter = input ("tekan [ENTER] untuk melanjutkan >> ") 
 
+def exit():
+    clear()
+    cover()
+    print ("\n")
+    print ("Terima kasih telah menggunakan program ini\n\n".center(107))
+    garis("=")
+
 def halaman_awal (): 
     clear() 
     cover () 
@@ -245,22 +252,53 @@ def login_admin():
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def menu_user():
-    clear()
-    cover()
-    print ("""
-                                        1. CEK PROFIL
-                                        2. DAFTARKAN KENDARAAN 
-                                        3. BOOKING PARKIR 
-                                        4. CEK KETERSEDIAAN PARKIR
-                                        5. PENITIPAN BARANG
-                                        6. LAPORKAN KEHILANGAN DAN PENEMUAN BARANG
-                                        7. RIWAYAT BOOKING 
-                                        8. EXIT  
+    while True:
+        clear()
+        cover()
+        print ("""
+                                        . PERATURAN DAN PEMBERITAHUAN
+                                        . CEK PROFIL
+                                        . DAFTARKAN KENDARAAN 
+                                        . BOOKING PARKIR 
+                                        . CEK KETERSEDIAAN PARKIR
+                                        . PENITIPAN BARANG
+                                        . LAPORKAN KEHILANGAN DAN PENEMUAN BARANG
+                                        . RIWAYAT BOOKING 
+                                        . EXIT  
 """)
-    garis("=")
-    pilih = int(input("masukkan pilihan >> "))
-    enter()
-
+        garis("=")
+        try :
+            pilih = int(input("masukkan pilihan >> "))
+            if pilih == 1 : 
+                pass  
+            elif pilih == 2 :
+                enter ()
+                cek_profil_user() 
+                break  
+            elif pilih == 3 :
+                pass  
+            elif pilih == 4 :  
+                pass
+            elif pilih == 5 :
+                pass  
+            elif pilih == 6 :
+                pass  
+            elif pilih == 7 :
+                pass  
+            elif pilih == 8 :
+                pass  
+            elif pilih == 9 :
+                enter()
+                exit()
+                break
+            else :
+                raise ValueError ("Opsi Tidak Tersedia")
+        except ValueError as error :
+            termcolor.cprint (error, "red")
+            enter ()
+            continue
+def pemberitahuan_user ():
+    pass
 def cek_profil_user ():
     clear()
     cover()
@@ -271,51 +309,54 @@ def cek_profil_user ():
                                         NO TELEPON      :   {nomor_hp[0]}
 
 """)
+    garis("=")
     enter ()
     menu_user()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def daftarakan_kendaraan_user():
+    pass
+def booking_parkir_user():
+    pass
+def penitipan_barang_user():
+    pass
+def laporkan_kehilangan_penemuan_user():
+    pass
+def riwayat_booking_user():
+    pass
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> JUKIR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def menu_jukir():
-    clear()
-    cover()
-    print ("""
+    while True :
+        clear()
+        cover()
+        print ("""
                                         . CEK PROFIL
                                         . ABSENSI
                                         . CEK BOOKING PARKIR
                                         . CEK KETERSEDIAAN PARKIR
                                         . CEK PENITIPAN BARANG
                                         . CEK LAPORKAN KEHILANGAN DAN PENEMUAN BARANG
-
-
 """)
+        try :
+            pilih = int (input("Masukkan pilihan >> "))
+            if pilih == 1 :
+                pass
+            elif pilih == 2 :
+                pass
+            elif pilih == 2 :
+                pass
+            elif pilih == 2 :
+                pass
+            elif pilih == 2 :
+                pass
+            elif pilih == 2 :
+                pass
+            else :
+                raise ValueError ("opsi tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint (error,"red")
+            enter()
+            continue
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ADMIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def menu_admin():
     clear()
