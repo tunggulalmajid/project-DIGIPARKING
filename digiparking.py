@@ -260,11 +260,10 @@ def menu_user():
                                         . CEK PROFIL
                                         . DAFTARKAN KENDARAAN 
                                         . BOOKING PARKIR 
-                                        . CEK KETERSEDIAAN PARKIR
                                         . PENITIPAN BARANG
                                         . LAPORKAN KEHILANGAN DAN PENEMUAN BARANG
                                         . RIWAYAT BOOKING 
-                                        . EXIT  
+                                        . LOG OUT   
 """)
         garis("=")
         try :
@@ -286,10 +285,8 @@ def menu_user():
             elif pilih == 7 :
                 pass  
             elif pilih == 8 :
-                pass  
-            elif pilih == 9 :
                 enter()
-                exit()
+                halaman_awal()
                 break
             else :
                 raise ValueError ("Opsi Tidak Tersedia")
@@ -336,6 +333,7 @@ def menu_jukir():
                                         . CEK KETERSEDIAAN PARKIR
                                         . CEK PENITIPAN BARANG
                                         . CEK LAPORKAN KEHILANGAN DAN PENEMUAN BARANG
+                                        . LOG OUT
 """)
         try :
             pilih = int (input("Masukkan pilihan >> "))
@@ -351,6 +349,10 @@ def menu_jukir():
                 pass
             elif pilih == 6 :
                 pass
+            elif pilih == 7 :
+                enter()
+                halaman_awal()
+                break
             else :
                 raise ValueError ("opsi tidak tersedia")
         except ValueError as error :
@@ -368,7 +370,10 @@ def menu_admin():
                                         . MONITORING JURU PARKIR
                                         . MONITORING KENDARAAN USER
                                         . MONITORING BOOKING PARKIR
+                                        . MONITORING PENITIPAN BARANG
                                         . MONITORING LAPORAN KEHILANGAN DAN PENEMUAN BARANG
+                                        . LOG OUT
+            
 """)
         garis ("=")
         try :
@@ -387,12 +392,21 @@ def menu_admin():
                 pass
             elif pilih == 6 :
                 pass
+            elif pilih == 7 :
+                pass
+            elif pilih == 8 :
+                enter()
+                halaman_awal()
+                break
             else :
                 raise ValueError ("opsi tidak tersedia")
         except ValueError as error :
             termcolor.cprint (error,"red")
             enter()
             continue
+
+def tambah_pengumuman():
+    pass
 
 def monitoring_user():
     while True :
