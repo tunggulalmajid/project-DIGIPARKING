@@ -1,6 +1,7 @@
 import os
 import csv
 import termcolor
+import datetime as dt
 
 def clear():
     os.system("cls")
@@ -397,7 +398,17 @@ def tambah_kendaraan():
     print ("\n")
     print ("TAMBAH KENDARAAN\n\n".center(107))
     garis("=")
-    jenis_kendaraan = input("masukkan jenis kendaraan (mobil/motor) >> ").lower()
+    while True :
+        try :
+            jenis_kendaraan = input("masukkan jenis kendaraan (mobil/motor) >> ").lower()
+            if jenis_kendaraan != "mobil" and jenis_kendaraan != "motor":
+                raise ValueError ("jenis kendaraan tidak valid")
+            else : 
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
     plat_nomor = input ("masukkan plat nomor kendaraan (P 1234 VV) >> ")
     tipe_kendaraan = input ("masukkan tipe kendaraan (Toyota Avanza / Honda Vario) >> ")
     tahun_kendaraan = input ("masukkan tahun kendaraan (2020) >> ")
@@ -649,10 +660,9 @@ def menu_admin():
                                         2. MONITORING USER 
                                         3. MONITORING JURU PARKIR
                                         4. MONITORING KENDARAAN USER
-                                        5. MONITORING KETERSEDIAAN PARKIR   
-                                        6. MONITORING BOOKING PARKIR
-                                        7. MONITORING PENITIPAN BARANG
-                                        8. LOG OUT
+                                        5. MONITORING BOOKING PARKIR
+                                        6. MONITORING PENITIPAN BARANG
+                                        7. LOG OUT
             
 """)
         garis ("=")
@@ -660,25 +670,32 @@ def menu_admin():
             pilih = int (input("Masukkan pilihan >> "))
             if pilih == 1 :
                 enter()
+                clear()
                 monitoring_peraturan()
                 break
             elif pilih == 2 :
                 enter()
+                clear()
                 monitoring_user()
                 break
             elif pilih == 3 :
-                pass
+                enter()
+                clear()
+                monitoring_jukir()
             elif pilih == 4 :
                 enter()
+                clear()
                 monitoring_kendaraan_user()
                 break
             elif pilih == 5 :
-                pass
+                enter()
+                clear()
+                monitoring_booking_parkir()
             elif pilih == 6 :
-                pass
+                enter()
+                clear()
+                monitoring_penitipan_barang()
             elif pilih == 7 :
-                pass
-            elif pilih == 8 :
                 enter()
                 halaman_awal()
                 break
@@ -986,7 +1003,12 @@ def update_user():
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
     while True :
         penampil_user()
-        pilih = (int (input("masukkan nomor user yang ingin diupdate >>")) - 1)
+        while True :
+            try :
+                pilih = (int (input("masukkan nomor user yang ingin diupdate >>")) - 1)
+                break
+            except ValueError :
+                termcolor.cprint("masukkan pilihan berupa angka", "red")
         border = ["NO","NAMA", "NIK", "TANGGAL LAHIR", "NOMOR HP", "USERNAME", "PASSWORD"]
         while True :
             clear()
@@ -1099,18 +1121,100 @@ def hapus_user():
         monitoring_user()
 #_________________MONITORING JUKIR________________________
 def penampil_jukir():
-    pass
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
+    garis("=")
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
+    garis("=")
+    for i in range (len(nama_jukir)):
+        print (f"|{i+1:^4}|{nama_jukir[i]:^20}|{nik_jukir[i]:^17}|{telepon_jukir[i]:^17}|{username_jukir[i]:^21}|{password_jukir[i]:^21}|")
+        garis("=")
 def monitoring_jukir():
-    pass
-
-def tambah_jukir ():
     clear()
     cover()
-    nama = input ("masukkan nama jukir >> ")
+    print ("")
+    print ("MONITORING JUKIR\n".center(107))
+    penampil_jukir()
+    print ("")
+    garis ("=")
+    print ("""   
+    1. TAMBAH JUKIR
+    2. UPDATE DATA JUKIR
+    3. CEK ABSENSI DAN KONTRIBUSI JUKIR
+    4. HAPUS DATA JUKIR
+    """)
+    garis("=")
+    while True :
+        try :
+            pilih = int(input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                enter()
+                clear()
+                tambah_jukir()
+            elif pilih == 2 :
+                enter()
+                clear()
+                update_jukir()
+            elif pilih == 3 :
+                enter()
+                clear()
+                cek_absensi_kontribusi_jukir()
+            elif pilih == 4 :
+                enter()
+                clear()
+                hapus_jukir()
+            elif pilih == 5 :
+                enter()
+                clear()
+                menu_admin()
+            else :
+                raise ValueError ("opsi yang nada pilih tidak tersedia")
+        except ValueError as error:
+            termcolor.cprint(error,"red")
+            enter()
+            continue 
+
+def tambah_jukir ():
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    clear()
+    cover()
+    # print (nama_jukir)
+    while True :
+        try :
+            nama = input ("masukkan nama jukir >> ")
+            if nama == "" or nama == " " or nama in nama_jukir :
+                raise ValueError ("nama jukir tidak tersedia, atau sudah digunakan")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
     nik = input ("masukkan nik >> ")
     telpon = int (input ("masukkan nomor telpon >> "))
-    username = input ("buat username jukir >> ")
-    password = input ("buat password jukir >> ")
+    while True:
+        try:
+            username = input ("buat username jukir >> ")
+            if len(username) < 5 or username in username_jukir :
+                raise ValueError ("username tidak tersedia, atau kurang dari 5 karakter")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    while True :
+        try:
+            password = input ("buat password jukir >> ")
+            if len(password) < 8 :
+                raise ValueError ("password kurang dari 8 karakter")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+
     garis("=")
     with open("dataadmin/loginjukir.csv", mode="a", newline="\n") as file:
         border = ["nama", "nik", "nomor telepon", "username", "password"]
@@ -1118,7 +1222,138 @@ def tambah_jukir ():
         writer.writerow({"nama" : nama, "nik" : nik, "nomor telepon": telpon,"username":username, "password":password})
     termcolor.cprint("jukir berhasil ditambahkan", "green")
     enter()
-    menu_admin()
+    monitoring_jukir()
+
+def update_jukir():
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    clear()
+    cover()
+    print ("")
+    print ("UPDATE DATA JUKIR\n".center(107))
+    penampil_jukir()
+    while True :
+        try :
+            pilih = (int (input("masukkan nomor user yang ingin diupdate >>")) - 1)
+            break
+        except ValueError :
+            termcolor.cprint("masukkan pilihan berupa angka", "red")
+   
+    clear()
+    cover()
+    border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
+    garis("=")
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
+    garis("=")
+    print (f"|{pilih+1:^4}|{nama_jukir[pilih]:^20}|{nik_jukir[pilih]:^17}|{telepon_jukir[pilih]:^17}|{username_jukir[pilih]:^21}|{password_jukir[pilih]:^21}|")
+    garis("=")
+    while True :
+        try:
+            bagian = input ("masukkan bagian yang ingin diupdate (nama/nik/telepon/username/password)>> ").lower()
+            if bagian not in ["nama", "nik", "telepon", "username", "password"]:
+                raise ValueError ("masukkan bagian yang ada")
+            elif bagian == "nama" :
+                pengganti = input ("masukkan nama pengganti  >> ")
+                nama_jukir[pilih] = pengganti
+                break
+            elif bagian == "nik" :
+                pengganti = input ("masukkan nik pengganti pengganti  >> ")
+                nik_jukir[pilih] = pengganti
+                break
+            elif bagian == "telepon" :
+                pengganti = input ("masukkan nomor telepon pengganti  >> ")
+                telepon_jukir[pilih] = pengganti
+                break
+            elif bagian == "username" :
+                pengganti = input ("masukkan username pengganti  >> ")
+                username_jukir[pilih] = pengganti
+                break
+            elif bagian == "password" :
+                pengganti = input ("masukkan password pengganti  >> ")
+                password_jukir[pilih] = pengganti
+                break
+        except ValueError as error :
+            termcolor.cprint (error,"red")
+            enter()
+            continue
+    with open ("dataadmin/loginjukir.csv", mode = "w", newline="\n") as file :
+        writer = csv.writer(file)
+        for i in range (len(nama_jukir)) :
+            writer.writerow([nama_jukir[i], nik_jukir[i], telepon_jukir[i], username_jukir[i], password_jukir[i]])
+    termcolor.cprint("data berhasil diupdate", "green")
+    while True :
+        try :
+            lagi = input ("apakah ingin mengupdate data jukir lagi (y/n)>> ").lower()
+            if lagi == "y":
+                enter()
+                clear()
+                update_jukir()
+                break
+            elif lagi == "n" :
+                enter()
+                clear()
+                monitoring_jukir()
+            else :
+                raise ValueError("inputan yang anda masukkan tidak valid")
+        except ValueError as error :
+            termcolor.cprint (error,"red")
+            enter()
+            continue
+
+
+def cek_absensi_kontribusi_jukir():
+    pass
+def hapus_jukir():
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    clear()
+    cover()
+    print ("")
+    print ("HAPUS DATA JUKIR\n".center(107))
+    penampil_jukir()
+    while True :
+        try :
+            pilih = (int (input("masukkan nomor user yang ingin dihapus >>")) - 1)
+            break
+        except ValueError :
+            termcolor.cprint("masukkan pilihan berupa angka", "red")
+    clear()
+    cover()
+    border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
+    garis("=")
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
+    garis("=")
+    print (f"|{pilih+1:^4}|{nama_jukir[pilih]:^20}|{nik_jukir[pilih]:^17}|{telepon_jukir[pilih]:^17}|{username_jukir[pilih]:^21}|{password_jukir[pilih]:^21}|")
+    garis("=")
+    while True :
+        try :
+            yakin = input("apakah yakin untuk menghapus data jukir (y/n) >> ").lower()
+            if yakin == "y" :
+                nama_jukir.pop(pilih)
+                nik_jukir.pop(pilih)
+                telepon_jukir.pop(pilih)
+                username_jukir.pop(pilih)
+                password_jukir.pop(pilih)
+                with open ("dataadmin/loginjukir.csv", mode = "w", newline="\n") as file :
+                    writer = csv.writer(file)
+                    for i in range (len(nama_jukir)) :
+                        writer.writerow([nama_jukir[i], nik_jukir[i], telepon_jukir[i], username_jukir[i], password_jukir[i]])
+                termcolor.cprint("data jukir berhasil dihapus", "green")
+                enter()
+                clear()
+                monitoring_jukir()
+                break
+            elif yakin == "n":
+                enter()
+                clear()
+                monitoring_jukir()
+                break
+            else : 
+                raise ValueError ("opsi yang anda pilih tidak tersedia")
+        except ValueError as error:
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+
+
 #________________________________________________________________MONITOR KENDARAAN MENU ADMIN_______________________________________________________________
 def monitoring_kendaraan_user():
     clear()
@@ -1366,22 +1601,59 @@ def hapus_motor_admin():
     clear()
     monitoring_kendaraan_user()
 
-def monitoring_ketersediaan_parkir():
-    pass
 def monitoring_booking_parkir():
     pass
-def monitoring_penitipan_barang():
-    pass
 
+#______________________________________________________________________PENITIPAN BARANG__________________________________________________________
+def monitoring_penitipan_barang():
+    clear()
+    cover()
+    print("")
+    print("MONITORING PENITIPAN BARANG\n".center(107))
+    garis("=")
+    print ("""
+            1. TAMBAHKAN BARANG
+            2. TANDAI BARANG TERAMBIL
+            3. KEMBALI KE MENU ADMIN
+    """)
+    while True:
+        try :
+            pilih = int (input ("masukkan opsi yang dipilih >> ")) 
+            if pilih == 1 :
+                enter()
+                clear()
+                tambah_penitipan_barang_admin()
+            elif pilih == 2 :
+                enter()
+                clear()
+                tandai_barang_terambil_admin()
+            elif pilih == 3 :
+                enter()
+                clear()
+                menu_admin()
+            else :
+                raise ValueError ("opsi yang anda pilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+
+def tambah_penitipan_barang_admin():
+    pass
+def tandai_barang_terambil_admin():
+    pass
+        
 
 
 
 
 if __name__ == "__main__":
-    login_user()
+    # monitoring_jukir()
+    # login_user()
     # tambah_peraturan()
-    # halaman_awal()
+    halaman_awal()
     # menu_admin()
+    # hapus_jukir()
     # monitoring_peraturan()
     # penampil_peraturan()
     # ketentuan_digiparking()
+    # update_jukir()
+    
