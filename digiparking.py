@@ -577,8 +577,145 @@ def booking_parkir_user():
     jika harian maka berapa hari 
     jika sudah maka booking sudah terdaftar dan dilanjut ke pembayaran
     """
+
+#__________________________________________________PENITIPAN BARANG USER_____________________________________________________________
 def penitipan_barang_user():
+    clear()
+    cover(b = 110)
+    print("")
+    print("PENITIPAN BARANG\n".center(110))
+    penampil_rak_barang_tersedia()
+    garis("=",b=110) 
+    print ("""
+        1. TITIPKAN BARANG
+        2. AMBIL BARANG
+        3. RIWAYAT PENITIPAN  
+        4. KEMBALI KE MENU 
+    """)
+    garis("=",b=110)
+    while True :
+        try :
+            pilih = int (input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                enter()
+                clear()
+                titipkan_barang_user()
+                break
+            elif pilih == 2 :
+                enter()
+                clear()
+                ambil_barang_user()
+                break
+            elif pilih == 3 :
+                enter()
+                clear()
+                riwayat_penitipan_user()
+                break
+            elif pilih == 4 :
+                enter()
+                clear()
+                menu_user()
+                break
+            else :
+                raise ValueError ("opsi yang anda pilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+
+def infokan():
+    rak = []    
+    for i in range (1,11):
+        i = str(i)
+        if len(i) < 2:
+            a = f"C0{i}"
+        elif len(i) == 2 :
+            a = f"C{i}"
+        rak.append(a)
+    with open ("dataadmin/rakpenitipanbarang.csv",mode="a", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow(rak)
+    
+def penampung_rak():
+    rak_tersedia = []
+    with open ("dataadmin/rakpenitipanbarang.csv",mode="r") as file:
+        reader = csv.reader(file)
+        for i in reader :
+            rak_tersedia.append(i)
+    return rak_tersedia
+
+def penampil_rak_barang_tersedia():
+    rak_tersedia = penampung_rak()
+    border = "RAK TERSEDIA"
+    garis("=",b=110)
+    print (f"|{border:^108}|")
+    garis("=",b=110)
+    for i in rak_tersedia[0]:
+        print (f"|{i:^9}|",end= "")
+    print ("")
+    garis("=",b=110)
+
+def titipkan_barang_user():
+    rak_barang = penampung_rak()
+    clear()
+    cover(b = 110)
+    print("")
+    print("TITIPKAN BARANG\n".center(110))
+    penampil_rak_barang_tersedia()
+    garis("=", b =110)
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password  = penampung_user() 
+    waktu_sekarang = dt.datetime.now()
+    waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
+
+    index_rak = []
+    while True :
+        try :
+            a = 0
+            rak = input("Masukkan nomor rak yang tersedia : ").capitalize()
+            for i in range (len(rak_barang[0])):
+                if rak == rak_barang[0][i]:
+                    index_rak.append(i)
+                    a += 1 
+                    break
+            if a == 1 :
+                break
+            else :
+                raise ValueError("Nomor rak yang anda inputkan tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    rak_barang[0][index_rak[0]] = "TERISI"
+    # print (rak_barang)
+    nama_barang = input ("masukkan nama barang >> ")
+    with open ("datauser/ahmad/titipbarang.csv", mode = "a",newline = "\n") as file :
+        border = ["pemilik","rak", "nama barang", "tanggal masuk"]
+        writer = csv.DictWriter(file, fieldnames=border)
+        writer.writerow({"pemilik" : "ahmad","rak" : rak,"nama barang":nama_barang,"tanggal masuk":waktu_sekarang})
+    with open ("dataadmin/rakpenitipanbarang.csv", mode= "w", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow(rak_barang[0])
+    termcolor.cprint("barang berhasil di titipkan", "green")
+    enter()
+    clear()
+    penitipan_barang_user()
+
+    
+    
+
+
+
+def ambil_barang_user():
+    clear()
+    cover()
     pass
+def riwayat_penitipan_user():
+    clear()
+    cover()
+    pass
+
+
+#___________________________________________________________________ RIWAYAT BOOKING USER____________________________________________________
 def riwayat_booking_user():
     pass
 
@@ -1635,6 +1772,8 @@ def monitoring_penitipan_barang():
                 raise ValueError ("opsi yang anda pilih tidak tersedia")
         except ValueError as error :
             termcolor.cprint(error,"red")
+            enter()
+            continue
 
 def tambah_penitipan_barang_admin():
     pass
@@ -1649,11 +1788,8 @@ if __name__ == "__main__":
     # monitoring_jukir()
     # login_user()
     # tambah_peraturan()
-    halaman_awal()
-    # menu_admin()
-    # hapus_jukir()
-    # monitoring_peraturan()
-    # penampil_peraturan()
-    # ketentuan_digiparking()
-    # update_jukir()
+    # halaman_awal()
+    titipkan_barang_user()
+    # titipkan_barang_user()
+    # penampil_rak_baarang_tersedia()
     
