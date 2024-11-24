@@ -585,6 +585,9 @@ def penitipan_barang_user():
     print("")
     print("PENITIPAN BARANG\n".center(110))
     penampil_rak_barang_tersedia()
+    print("")
+    print("BARANG DITITIPKAN\n".center(110))
+    penampil_barang()
     garis("=",b=110) 
     print ("""
         1. TITIPKAN BARANG
@@ -626,18 +629,21 @@ def penitipan_barang_user():
 def infokan():
     rak = []    
     for i in range (1,11):
-        i = str(i)
-        if len(i) < 2:
-            a = f"C0{i}"
-        elif len(i) == 2 :
-            a = f"C{i}"
+        a = "kosong"
         rak.append(a)
+        # i = str(i)
+        # if len(i) < 2:
+        #     a = f"C0{i}"
+        # elif len(i) == 2 :
+        #     a = f"C{i}"
+        # rak.append(a)
     with open ("dataadmin/rakpenitipanbarang.csv",mode="a", newline="\n") as file :
         writer = csv.writer(file)
         writer.writerow(rak)
     
 def penampung_rak():
     rak_tersedia = []
+    status = []
     with open ("dataadmin/rakpenitipanbarang.csv",mode="r") as file:
         reader = csv.reader(file)
         for i in reader :
@@ -645,16 +651,51 @@ def penampung_rak():
     return rak_tersedia
 
 def penampil_rak_barang_tersedia():
-    rak_tersedia = penampung_rak()
+    rak_tersedia= penampung_rak()
     border = "RAK TERSEDIA"
     garis("=",b=110)
     print (f"|{border:^108}|")
     garis("=",b=110)
-    for i in rak_tersedia[0]:
-        print (f"|{i:^9}|",end= "")
+    # print (rak_tersedia)
+    # print (status)
+
+    for i in range (len(rak_tersedia[0])):
+        print (f"|{rak_tersedia[0][i]:^9}|",end= "")
+    print ("")
+    garis("=",b=110)
+    for i in range (len(rak_tersedia[1])):
+        print (f"|{rak_tersedia[1][i]:^9}|",end= "")
     print ("")
     garis("=",b=110)
 
+def penampung_barang_user ():
+    pemilik = []
+    nama_barang = []
+    rak = []
+    tanggal_masuk = []
+    with open(f"datauser/{nama_profil[0]}/titipbarang.csv", mode="r") as file :
+        reader = csv.reader(file)
+        for i in reader :
+            pemilik.append(i[0])
+            rak.append(i[1])
+            nama_barang.append(i[2])
+            tanggal_masuk.append(i[3])
+    return pemilik,rak,nama_barang,tanggal_masuk
+
+def penampil_barang():
+    pemilik,rak,nama_barang,tanggal_masuk = penampung_barang_user()
+    border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK"]
+    garis("=",b=110)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+    garis("=",b=110)
+    if len(pemilik) == 0 :
+        tulisan = "TIDAK ADA BARANG YANG DITITIPKAN"
+        print (f"|{tulisan:^110}|")
+    else:
+        for i in range (len(pemilik)):
+            print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
+            garis("=",b=110)
+    
 def titipkan_barang_user():
     rak_barang = penampung_rak()
     clear()
@@ -666,6 +707,7 @@ def titipkan_barang_user():
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password  = penampung_user() 
     waktu_sekarang = dt.datetime.now()
     waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
+    # print (rak_barang)
 
     index_rak = []
     while True :
@@ -685,35 +727,108 @@ def titipkan_barang_user():
             termcolor.cprint(error,"red")
             enter()
             continue
-    rak_barang[0][index_rak[0]] = "TERISI"
-    # print (rak_barang)
+    rak_barang[1][index_rak[0]] = "TERISI"
     nama_barang = input ("masukkan nama barang >> ")
-    with open ("datauser/ahmad/titipbarang.csv", mode = "a",newline = "\n") as file :
+    with open (f"datauser/{nama_profil[0]}/titipbarang.csv", mode = "a",newline = "\n") as file :
         border = ["pemilik","rak", "nama barang", "tanggal masuk"]
         writer = csv.DictWriter(file, fieldnames=border)
-        writer.writerow({"pemilik" : "ahmad","rak" : rak,"nama barang":nama_barang,"tanggal masuk":waktu_sekarang})
+        writer.writerow({"pemilik" : nama_profil[0],"rak" : rak,"nama barang":nama_barang,"tanggal masuk":waktu_sekarang})
     with open ("dataadmin/rakpenitipanbarang.csv", mode= "w", newline="\n") as file :
         writer = csv.writer(file)
         writer.writerow(rak_barang[0])
+    with open ("dataadmin/rakpenitipanbarang.csv", mode= "a", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow(rak_barang[1])
     termcolor.cprint("barang berhasil di titipkan", "green")
     enter()
     clear()
     penitipan_barang_user()
 
-    
-    
-
-
-
 def ambil_barang_user():
+    rak_barang = penampung_rak()
+    pemilik,rak,nama_barang,tanggal_masuk = penampung_barang_user()
+    waktu_sekarang = dt.datetime.now()
+    waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
     clear()
-    cover()
-    pass
+    cover(b = 110)
+    print("")
+    print("AMBIL BARANG\n".center(110))
+    print ("BARANG DITITIPKAN : ")
+    penampil_barang()
+    pilih = int (input("masukkan nomor barang yang ingin di ambil >> ")) - 1 
+    index_rak = []
+    for i in range(len(rak_barang[0])):
+        if rak[pilih]==rak_barang[0][i]:
+            index_rak.append(i)
+    rak_barang[1][index_rak[0]] = "KOSONG"
+    enter()
+    clear()
+    cover(b = 110)
+    print("")
+    print("AMBIL BARANG\n".center(110))
+    border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK"]
+    garis("=",b=110)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+    garis("=",b=110)
+    print (f"|{pilih+1:^6}|{pemilik[pilih]:^30}|{rak[pilih]:^20}|{nama_barang[pilih]:^28}|{tanggal_masuk[pilih]:^20}|")
+    garis("=",b=110)
+    yakin = input("apakah anda yakin ingin mengambil barang ini ? (y/n) >> ").lower()
+    if yakin == "y" :
+        with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="a",newline="\n") as file :
+            border = ["pemilik","rak" ,"nama barang", "tanggal masuk","tanggal keluar"]
+            writer = csv.DictWriter(file, fieldnames=border)
+            writer.writerow({"pemilik" : pemilik[pilih],"rak" : rak[pilih],"nama barang":nama_barang[pilih], "tanggal masuk" : tanggal_masuk[pilih],"tanggal keluar":waktu_sekarang})
+        pemilik.pop(pilih)
+        rak.pop(pilih)
+        nama_barang.pop(pilih)
+        tanggal_masuk.pop(pilih)
+        with open (f"datauser/{nama_profil[0]}/titipbarang.csv", mode = "w",newline="\n")as file:
+            writer = csv.writer(file)
+            for i in range (len(pemilik)):
+                writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
+        with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
+            writer = csv.writer(file)
+            writer.writerow(rak_barang[0])
+        with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
+            writer = csv.writer(file)
+            writer.writerow(rak_barang[1])
+        enter()
+        clear()
+        penitipan_barang_user()
+
+def penampung_riwayat_penitipan_barang_user():
+    pemilik = []
+    rak = []
+    nama_barang = []
+    tanggal_masuk = []
+    tanggal_keluar = []
+    with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="r",newline="\n") as file :
+        reader = csv.reader(file)
+        for i in reader:
+            pemilik.append(i[0])
+            rak.append(i[1])
+            nama_barang.append(i[2])
+            tanggal_masuk.append(i[3])
+            tanggal_keluar.append(i[4])
+    return pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar
+
 def riwayat_penitipan_user():
     clear()
-    cover()
-    pass
-
+    cover(b = 131)
+    pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar = penampung_riwayat_penitipan_barang_user()
+    print("")
+    print("RIWAYAT PENITIPAN BARANG\n".center(131))
+    border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK", "TANGGAL KELUAR"]
+    garis("=",b=131)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|{border[5]:^20}|")
+    garis("=",b=131)
+    for i in range (len (pemilik)):
+        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|{tanggal_keluar[i]:^20}|")
+        garis("=",b=131)
+    garis("=",b=131)
+    enter()
+    clear()
+    penitipan_barang_user()
 
 #___________________________________________________________________ RIWAYAT BOOKING USER____________________________________________________
 def riwayat_booking_user():
@@ -1737,22 +1852,54 @@ def hapus_motor_admin():
     enter()
     clear()
     monitoring_kendaraan_user()
-
+#____________________________________________________________________BOOKING PARKIR USER_________________________________________________________
 def monitoring_booking_parkir():
     pass
 
 #______________________________________________________________________PENITIPAN BARANG__________________________________________________________
+def penampung_barang_admin():
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    pemilik = []
+    rak = []
+    nama_barang = []
+    tanggal_masuk = []
+    for i in user :
+        with open(f"datauser/{i}/titipbarang.csv", mode="r") as file :
+            reader = csv.reader(file)
+            for a in reader :
+                pemilik.append(a[0])
+                rak.append(a[1])
+                nama_barang.append(a[2])
+                tanggal_masuk.append(a[3])
+    return pemilik,rak,nama_barang,tanggal_masuk
+
+def penampil_barang_admin():
+    pemilik,rak,nama_barang,tanggal_masuk = penampung_barang_admin()
+    print("")
+    print ("LIST BARANG DALAM RAK\n".center(110))
+    border = ["NO","PEMILIK","RAK BARANG","NAMA BARANG", "TANGGAL MASUK"]
+    garis("=",b=110)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+    garis("=",b=110)
+    for i in range (len(pemilik)):
+        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
+        garis("=",b=110)
+
 def monitoring_penitipan_barang():
     clear()
-    cover()
+    cover(b=110)
     print("")
-    print("MONITORING PENITIPAN BARANG\n".center(107))
-    garis("=")
+    print("MONITORING PENITIPAN BARANG\n".center(110))
+    penampil_rak_barang_tersedia()
+    penampil_barang_admin()
+    garis("=",b=110)
     print ("""
             1. TAMBAHKAN BARANG
             2. TANDAI BARANG TERAMBIL
-            3. KEMBALI KE MENU ADMIN
+            3. RIWAYAT PENITIPAN BARANG
+            4. KEMBALI KE MENU ADMIN
     """)
+    garis("=",b=110)
     while True:
         try :
             pilih = int (input ("masukkan opsi yang dipilih >> ")) 
@@ -1767,6 +1914,10 @@ def monitoring_penitipan_barang():
             elif pilih == 3 :
                 enter()
                 clear()
+                riwayat_penitipan_barang_admin()
+            elif pilih == 4 :
+                enter()
+                clear()
                 menu_admin()
             else :
                 raise ValueError ("opsi yang anda pilih tidak tersedia")
@@ -1774,22 +1925,66 @@ def monitoring_penitipan_barang():
             termcolor.cprint(error,"red")
             enter()
             continue
-
+    
 def tambah_penitipan_barang_admin():
-    pass
+    clear()
+    cover(b=110)
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    print("")
+    print("MONITORING PENITIPAN BARANG\n".center(110))
+    penampil_rak_barang_tersedia()
+    garis("=",b=110)
+    
+
+
+
+
 def tandai_barang_terambil_admin():
     pass
-        
+#____________________________________________________RIWAYAT PENITIPAN BARANG_____________________________________________________
+def penampung_riwayat_barang_admin():
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    pemilik = []
+    rak = []
+    nama_barang = []
+    tanggal_masuk = []
+    tanggal_keluar = []
+    for i in user:
+        with open(f"datauser/{i}/riwayat_titip_barang.csv",mode="r")as file:
+            reader = csv.reader(file)
+            for a in reader:
+                pemilik.append(a[0])
+                rak.append(a[1])
+                nama_barang.append(a[2])
+                tanggal_masuk.append(a[3])
+                tanggal_keluar.append(a[4])
+    return pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar
 
-
-
+def riwayat_penitipan_barang_admin():
+    pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar =penampung_riwayat_barang_admin()
+    clear()
+    cover(b=131)
+    print("")
+    print("RIWAYAT PENITIPAN BARANG\n".center(131))
+    border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK", "TANGGAL KELUAR"]
+    garis("=",b=131)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|{border[5]:^20}|")
+    garis("=",b=131)
+    for i in range (len (pemilik)):
+        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|{tanggal_keluar[i]:^20}|")
+        garis("=",b=131)
+    garis("=",b=131)
+    enter()
+    clear()
+    monitoring_penitipan_barang()
 
 if __name__ == "__main__":
     # monitoring_jukir()
     # login_user()
     # tambah_peraturan()
     # halaman_awal()
-    titipkan_barang_user()
+    # penampil_barang()
     # titipkan_barang_user()
-    # penampil_rak_baarang_tersedia()
-    
+    # riwayat_penitipan_barang_admin()
+    # monitoring_penitipan_barang()
+    tambah_penitipan_barang_admin()
