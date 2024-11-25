@@ -2,6 +2,7 @@ import os
 import csv
 import termcolor
 import datetime as dt
+import time
 
 def clear():
     os.system("cls")
@@ -10,37 +11,43 @@ def garis(a,b=107):
     print (a*b)
 
 def cover (b=107):
-    garis("=",b)
+    garis("═",b)
     print ("")
-    print("██████╗ ██╗ ██████╗ ██╗██████╗  █████╗ ██████╗ ██╗  ██╗██╗███╗   ██╗ ██████╗ ".center(b))
-    print("██╔══██╗██║██╔════╝ ██║██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██║████╗  ██║██╔════╝ ".center(b))
-    print("██║  ██║██║██║  ███╗██║██████╔╝███████║██████╔╝█████╔╝ ██║██╔██╗ ██║██║  ███╗ ".center(b))
-    print("██║  ██║██║██║   ██║██║██╔═══╝ ██╔══██║██╔══██╗██╔═██╗ ██║██║╚██╗██║██║   ██║ ".center(b))
-    print("██████╔╝██║╚██████╔╝██║██║     ██║  ██║██║  ██║██║  ██╗██║██║ ╚████║╚██████╔╝ ".center(b))
+    print ("██████╗ ██╗ ██████╗ ██╗██████╗  █████╗ ██████╗ ██╗  ██╗██╗███╗   ██╗ ██████╗ ".center(b),)
+    print ("██╔══██╗██║██╔════╝ ██║██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██║████╗  ██║██╔════╝ ".center(b),)
+    print ("██║  ██║██║██║  ███╗██║██████╔╝███████║██████╔╝█████╔╝ ██║██╔██╗ ██║██║  ███╗".center(b),)
+    print ("██║  ██║██║██║   ██║██║██╔═══╝ ██╔══██║██╔══██╗██╔═██╗ ██║██║╚██╗██║██║   ██║".center(b),)
+    print ("██████╔╝██║╚██████╔╝██║██║     ██║  ██║██║  ██║██║  ██╗██║██║ ╚████║╚██████╔╝".center(b))
+    print ("╚═════╝ ╚═╝ ╚═════╝ ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ".center(b))    
     print ("")
-    garis("=",b)
+    garis("═",b)
 
 def enter (a=""): 
     enter = input (f"{a}tekan [ENTER] untuk melanjutkan >> ") 
+
+def transisi(b=107):
+    print ("══")
 
 def exit():
     clear()
     cover()
     print ("\n")
-    print ("Terima kasih telah menggunakan program ini\n\n".center(107))
-    garis("=")
+    print ("TERIMAKASIH TELAH MENGGUNAKAN PROGRAM INI\n\n".center(107))
+    garis("═")
+    enter()
+    clear()
 
 def halaman_awal (): 
     clear() 
     cover () 
     print ("""
-                                            1. REGISTRASI
+                                            1. REGISTRASI USER
                                             2. LOGIN SEBAGAI USER
                                             3. LOGIN SEBAGAI JUKIR
                                             4. LOGIN SEBAGAI ADMIN
                                             5. EXIT 
 """) 
-    garis("=") 
+    garis("═") 
     while True : 
         try : 
             pilih = int (input ("Pilih Opsi yang tersedia >> ")) 
@@ -65,6 +72,8 @@ def halaman_awal ():
                 login_admin()
                 break
             elif pilih == 5 :
+                enter()
+                clear()
                 exit()
                 break
             else : 
@@ -94,8 +103,11 @@ def penampung_user ():
 
 
 def registrasi (): 
-    clear() 
+    clear()
     cover() 
+    print("")
+    print("REGISTRASI USER\n".center(107))
+    garis("═")
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
 
     while True : 
@@ -131,12 +143,25 @@ def registrasi ():
                     break 
             except ValueError as error: 
                 termcolor.cprint (error, "red") 
-        garis("=") 
+        garis("═") 
         with open ("dataadmin/datauser.csv", mode = "a", newline = "\n") as file : 
             border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
             writer = csv.DictWriter (file, fieldnames=border) 
             writer.writerow ( {"nama lengkap" : nama, "nik" :  nik,"tanggal lahir" : tanggal_lahir,"nomor hp" : nomorhp, "username" : username, "password" : password2} ) 
-        termcolor.cprint ("registrasi berhasil, silahkan login", "green") 
+        os.makedirs(f"datauser/{nama}")
+        with open (f"datauser/{nama}/mobil.csv", mode="w")as file:
+            writer = csv.writer(file)
+            writer.writerow("")
+        with open (f"datauser/{nama}/motor.csv", mode="w")as file:
+            writer = csv.writer(file)
+            writer.writerow("")
+        with open (f"datauser/{nama}/riwayat_titip_barang.csv", mode="w")as file:
+            writer = csv.writer(file)
+            writer.writerow("")
+        with open (f"datauser/{nama}/titipbarang.csv", mode="w")as file:
+            writer = csv.writer(file)
+            writer.writerow("")
+        termcolor.cprint ("registrasi berhasil, silahkan login", "green")
         enter()
         halaman_awal() 
         
@@ -150,6 +175,9 @@ def login_user ():
     while True:
         clear () 
         cover ()
+        print("")
+        print("LOGIN USER\n".center(107))
+        garis("═")
         if percobaan > 3 :
             termcolor.cprint("anda telah mencoba 3 kali, silahkan tunggu beberapa saat untuk mencoba lagi","red") 
             enter()
@@ -159,7 +187,7 @@ def login_user ():
             user,nik,tanggal_lahir,nomor_hp,list_username,list_password  = penampung_user() 
             username = input ("masukkan username anda >> ") 
             password = input ("masukkan password anda >> ") 
-            garis("=")
+            garis("═")
             indikator = 0 
             for i in range (len(list_username)): 
                 if username == list_username[i] and password == list_password[i] :
@@ -206,6 +234,9 @@ def login_jukir():
     while True:
         clear()
         cover()
+        print("")
+        print("LOGIN JUKIR\n".center(107))
+        garis("═")
         if percobaan > 3 :
             termcolor.cprint("anda telah mencoba 3 kali, silahkan tunggu beberapa saat untuk mencoba lagi","red")
             enter()
@@ -215,7 +246,7 @@ def login_jukir():
             
             username = input ("masukkan username anda >> ")
             password = input ("masukkan password anda >> ")
-            garis("=")
+            garis("═")
             nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
             for i in range(len(username_jukir)):
                 if username == username_jukir[i] and password == password_jukir[i]:
@@ -238,6 +269,9 @@ def login_admin():
     while True:
         clear()
         cover()
+        print("")
+        print("LOGIN ADMIN\n".center(107))
+        garis("═")
         useradmin = []
         passadmin = []
         with open("dataadmin/loginadmin.csv", mode="r") as file:
@@ -253,7 +287,7 @@ def login_admin():
         else : 
             username = input ("masukkan username >> ")
             password = input ("masukkan password >> ")
-            garis("=")
+            garis("═")
             for i in range(len(useradmin)):
                 if username == useradmin[i] and password == passadmin[i] :
                     termcolor.cprint("LOGIN BERHASIL", "green")
@@ -280,7 +314,7 @@ def menu_user():
                                         6. RIWAYAT BOOKING 
                                         7. LOG OUT   
 """)
-        garis("=")
+        garis("═")
         try :
             pilih = int(input("masukkan pilihan >> "))
             if pilih == 1 : 
@@ -343,7 +377,7 @@ def cek_profil_user ():
                                         NO TELEPON      :   {nomor_hp_profil[0]}
 
 """)
-    garis("=")
+    garis("═")
     enter ()
     clear()
     menu_user()
@@ -397,7 +431,7 @@ def tambah_kendaraan():
     cover()
     print ("\n")
     print ("TAMBAH KENDARAAN\n\n".center(107))
-    garis("=")
+    garis("═")
     while True :
         try :
             jenis_kendaraan = input("masukkan jenis kendaraan (mobil/motor) >> ").lower()
@@ -413,7 +447,7 @@ def tambah_kendaraan():
     tipe_kendaraan = input ("masukkan tipe kendaraan (Toyota Avanza / Honda Vario) >> ")
     tahun_kendaraan = input ("masukkan tahun kendaraan (2020) >> ")
     warna_kendaraan = input ("masukkan warna kendaraan (merah/abu-abu) >> ")
-    garis("=")
+    garis("═")
     if not os.path.exists(f"datauser/{nama_profil[0]}") :
         os.makedirs(f"datauser/{nama_profil[0]}")
     with open (f"datauser/{nama_profil[0]}/{jenis_kendaraan}.csv", mode="a", newline="\n") as file :
@@ -433,12 +467,15 @@ def penampung_mobil():
     with open (f"datauser/{nama_profil[0]}/mobil.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader:
-            atas_nama.append(i[0])
-            jenis_kendaraan.append(i[1])
-            plat_nomor.append(i[2])
-            tipe_kendaraan.append(i[3])
-            tahun_kendaraan.append(i[4])
-            warna_kendaraan.append(i[5])
+            if i == []:
+                continue
+            else :
+                atas_nama.append(i[0])
+                jenis_kendaraan.append(i[1])
+                plat_nomor.append(i[2])
+                tipe_kendaraan.append(i[3])
+                tahun_kendaraan.append(i[4])
+                warna_kendaraan.append(i[5])
     return atas_nama,jenis_kendaraan,plat_nomor,tipe_kendaraan,tahun_kendaraan,warna_kendaraan
 
 def penampil_mobil():
@@ -447,9 +484,14 @@ def penampil_mobil():
     garis("=",b=128)
     print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
     garis("=",b=128)
-    for i in range (len(jenis_kendaraan)):
-        print (f"|{i+1:^3} |{atas_nama[i]:^25}|{jenis_kendaraan[i]:^17}|{plat_nomor[i]:^15}|{tipe_kendaraan[i]:^25}|{tahun_kendaraan[i]:^17}|{warna_kendaraan[i]:^17}|")
+    if len(atas_nama) == 0:
+        print ("")
+        print("BELUM ADA KENDARAAN TERDAFTAR\n".center(120))
         garis("=",b=128)
+    else :
+        for i in range (len(jenis_kendaraan)):
+            print (f"|{i+1:^3} |{atas_nama[i]:^25}|{jenis_kendaraan[i]:^17}|{plat_nomor[i]:^15}|{tipe_kendaraan[i]:^25}|{tahun_kendaraan[i]:^17}|{warna_kendaraan[i]:^17}|")
+            garis("=",b=128)
 
 def hapus_mobil():
     clear()
@@ -503,12 +545,15 @@ def penampung_motor():
     with open (f"datauser/{nama_profil[0]}/motor.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader:
-            atas_nama.append(i[0])
-            jenis_kendaraan.append(i[1])
-            plat_nomor.append(i[2])
-            tipe_kendaraan.append(i[3])
-            tahun_kendaraan.append(i[4])
-            warna_kendaraan.append(i[5])
+            if i == []:
+                continue
+            else :
+                atas_nama.append(i[0])
+                jenis_kendaraan.append(i[1])
+                plat_nomor.append(i[2])
+                tipe_kendaraan.append(i[3])
+                tahun_kendaraan.append(i[4])
+                warna_kendaraan.append(i[5])
     return atas_nama,jenis_kendaraan,plat_nomor,tipe_kendaraan,tahun_kendaraan,warna_kendaraan
 
 def penampil_motor():
@@ -517,9 +562,14 @@ def penampil_motor():
     garis("=",b=128)
     print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
     garis("=",b=128)
-    for i in range (len(jenis_kendaraan)):
-        print (f"|{i+1:^3} |{atas_nama[i]:^25}|{jenis_kendaraan[i]:^17}|{plat_nomor[i]:^15}|{tipe_kendaraan[i]:^25}|{tahun_kendaraan[i]:^17}|{warna_kendaraan[i]:^17}|")
+    if len(atas_nama) == 0:
+        print ("")
+        print("BELUM ADA KENDARAAN TERDAFTAR\n".center(120))
         garis("=",b=128)
+    else :
+        for i in range (len(jenis_kendaraan)):
+            print (f"|{i+1:^3} |{atas_nama[i]:^25}|{jenis_kendaraan[i]:^17}|{plat_nomor[i]:^15}|{tipe_kendaraan[i]:^25}|{tahun_kendaraan[i]:^17}|{warna_kendaraan[i]:^17}|")
+            garis("=",b=128)
 
 def hapus_motor():
     clear()
@@ -629,7 +679,7 @@ def penitipan_barang_user():
 def infokan():
     rak = []    
     for i in range (1,11):
-        a = "kosong"
+        a = "KOSONG"
         rak.append(a)
         # i = str(i)
         # if len(i) < 2:
@@ -676,10 +726,13 @@ def penampung_barang_user ():
     with open(f"datauser/{nama_profil[0]}/titipbarang.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader :
-            pemilik.append(i[0])
-            rak.append(i[1])
-            nama_barang.append(i[2])
-            tanggal_masuk.append(i[3])
+            if i == []:
+                continue
+            else :
+                pemilik.append(i[0])
+                rak.append(i[1])
+                nama_barang.append(i[2])
+                tanggal_masuk.append(i[3])
     return pemilik,rak,nama_barang,tanggal_masuk
 
 def penampil_barang():
@@ -689,8 +742,9 @@ def penampil_barang():
     print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
     garis("=",b=110)
     if len(pemilik) == 0 :
-        tulisan = "TIDAK ADA BARANG YANG DITITIPKAN"
-        print (f"|{tulisan:^110}|")
+        tulisan = "TIDAK ADA BARANG YANG DITITIPKAN".center(110)
+        print (tulisan)
+        garis("=",b=110)
     else:
         for i in range (len(pemilik)):
             print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
@@ -753,49 +807,67 @@ def ambil_barang_user():
     cover(b = 110)
     print("")
     print("AMBIL BARANG\n".center(110))
+    garis("=",b=110)
     print ("BARANG DITITIPKAN : ")
     penampil_barang()
-    pilih = int (input("masukkan nomor barang yang ingin di ambil >> ")) - 1 
-    index_rak = []
-    for i in range(len(rak_barang[0])):
-        if rak[pilih]==rak_barang[0][i]:
-            index_rak.append(i)
-    rak_barang[1][index_rak[0]] = "KOSONG"
-    enter()
-    clear()
-    cover(b = 110)
-    print("")
-    print("AMBIL BARANG\n".center(110))
-    border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK"]
-    garis("=",b=110)
-    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
-    garis("=",b=110)
-    print (f"|{pilih+1:^6}|{pemilik[pilih]:^30}|{rak[pilih]:^20}|{nama_barang[pilih]:^28}|{tanggal_masuk[pilih]:^20}|")
-    garis("=",b=110)
-    yakin = input("apakah anda yakin ingin mengambil barang ini ? (y/n) >> ").lower()
-    if yakin == "y" :
-        with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="a",newline="\n") as file :
-            border = ["pemilik","rak" ,"nama barang", "tanggal masuk","tanggal keluar"]
-            writer = csv.DictWriter(file, fieldnames=border)
-            writer.writerow({"pemilik" : pemilik[pilih],"rak" : rak[pilih],"nama barang":nama_barang[pilih], "tanggal masuk" : tanggal_masuk[pilih],"tanggal keluar":waktu_sekarang})
-        pemilik.pop(pilih)
-        rak.pop(pilih)
-        nama_barang.pop(pilih)
-        tanggal_masuk.pop(pilih)
-        with open (f"datauser/{nama_profil[0]}/titipbarang.csv", mode = "w",newline="\n")as file:
-            writer = csv.writer(file)
-            for i in range (len(pemilik)):
-                writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
-        with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
-            writer = csv.writer(file)
-            writer.writerow(rak_barang[0])
-        with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
-            writer = csv.writer(file)
-            writer.writerow(rak_barang[1])
+    if len(pemilik) == 0 :
         enter()
         clear()
         penitipan_barang_user()
-
+    else :
+        pilih = int (input("masukkan nomor barang yang ingin di ambil >> ")) - 1 
+        index_rak = []
+        for i in range(len(rak_barang[0])):
+            if rak[pilih]==rak_barang[0][i]:
+                index_rak.append(i)
+        rak_barang[1][index_rak[0]] = "KOSONG"
+        enter()
+        clear()
+        cover(b = 110)
+        print("")
+        print("AMBIL BARANG\n".center(110))
+        border = ["NO", "PEMILIK","RAK BARANG", "NAMA BARANG", "TANGGAL MASUK"]
+        garis("=",b=110)
+        print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+        garis("=",b=110)
+        print (f"|{pilih+1:^6}|{pemilik[pilih]:^30}|{rak[pilih]:^20}|{nama_barang[pilih]:^28}|{tanggal_masuk[pilih]:^20}|")
+        garis("=",b=110)
+        yakin = input("apakah anda yakin ingin mengambil barang ini ? (y/n) >> ").lower()
+        while True :
+            try:
+                if yakin == "y" :
+                    with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="a",newline="\n") as file :
+                        border = ["pemilik","rak" ,"nama barang", "tanggal masuk","tanggal keluar"]
+                        writer = csv.DictWriter(file, fieldnames=border)
+                        writer.writerow({"pemilik" : pemilik[pilih],"rak" : rak[pilih],"nama barang":nama_barang[pilih], "tanggal masuk" : tanggal_masuk[pilih],"tanggal keluar":waktu_sekarang})
+                    pemilik.pop(pilih)
+                    rak.pop(pilih)
+                    nama_barang.pop(pilih)
+                    tanggal_masuk.pop(pilih)
+                    with open (f"datauser/{nama_profil[0]}/titipbarang.csv", mode = "w",newline="\n")as file:
+                        writer = csv.writer(file)
+                        for i in range (len(pemilik)):
+                            writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
+                    with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
+                        writer = csv.writer(file)
+                        writer.writerow(rak_barang[0])
+                    with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
+                        writer = csv.writer(file)
+                        writer.writerow(rak_barang[1])
+                    enter()
+                    clear()
+                    penitipan_barang_user()
+                    break
+                elif yakin == "n" :
+                    enter()
+                    penitipan_barang_user()
+                    break
+                else :
+                    raise ValueError("inputan tidak valid")
+            except ValueError as error :
+                termcolor.cprint(error,"red")
+                enter()
+                continue
 def penampung_riwayat_penitipan_barang_user():
     pemilik = []
     rak = []
@@ -805,11 +877,14 @@ def penampung_riwayat_penitipan_barang_user():
     with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="r",newline="\n") as file :
         reader = csv.reader(file)
         for i in reader:
-            pemilik.append(i[0])
-            rak.append(i[1])
-            nama_barang.append(i[2])
-            tanggal_masuk.append(i[3])
-            tanggal_keluar.append(i[4])
+            if i == []:
+                continue
+            else :
+                pemilik.append(i[0])
+                rak.append(i[1])
+                nama_barang.append(i[2])
+                tanggal_masuk.append(i[3])
+                tanggal_keluar.append(i[4])
     return pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar
 
 def riwayat_penitipan_user():
@@ -822,9 +897,14 @@ def riwayat_penitipan_user():
     garis("=",b=131)
     print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|{border[5]:^20}|")
     garis("=",b=131)
-    for i in range (len (pemilik)):
-        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|{tanggal_keluar[i]:^20}|")
-        garis("=",b=131)
+    if len(pemilik) == 0 :
+        print ("")
+        print ("BELUM ADA RIWAYAT PENITIPAN BARANG\n".center(131))
+        garis("═")
+    else :
+        for i in range (len (pemilik)):
+            print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|{tanggal_keluar[i]:^20}|")
+            garis("=",b=131)
     garis("=",b=131)
     enter()
     clear()
@@ -847,7 +927,7 @@ def menu_jukir():
                                         5. CEK PENITIPAN BARANG
                                         6. LOG OUT
 """)
-        garis("=")
+        garis("═")
         try :
             pilih = int (input("Masukkan pilihan >> "))
             if pilih == 1 :
@@ -889,7 +969,7 @@ def cek_profil_jukir():
                                     NIK           : {nik_jukir_profil[0]}
                                     NOMOR TELEPON : {telepon_jukir_profil[0]}    
 """)
-    garis("=")
+    garis("═")
     enter()
     clear()
     menu_jukir()
@@ -971,7 +1051,7 @@ def monitoring_peraturan():
     3. HAPUS PERATURAN
     4. KEMBALI KE MENU ADMIN
     """)
-    garis("=")
+    garis("═")
     while True :
         try :
             pilih = int (input("pilih opsi yang tersedia >> "))
@@ -1014,19 +1094,19 @@ def penampung_peraturan():
     return isi
 
 def penampil_peraturan():
-    garis("=")
+    garis("═")
     isi = penampung_peraturan()
     print ("KETENTUAN DIGIPARKING :")
     for i in range(len(isi)) :
         print (f"\t >. {isi[i]}")
-    garis("=")
+    garis("═")
 
 def tambah_peraturan():
     clear()
     cover()
     print ("")
     print("TAMBAH PERATURAN\n".center(107))
-    garis("=")
+    garis("═")
     while True : 
         try:
             isi = input ("Isi Peraturan (tidak boleh lebih dari 90 karakter)>> ")
@@ -1054,12 +1134,12 @@ def update_peraturan():
     print("UPDATE PERATURAN\n".center(107))
     isi = penampung_peraturan()
     border = ["NO", "ISI"]
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^5}|{border[1]:^99}|")
-    garis("=")
+    garis("═")
     for i in range (len (isi)):
         print (f"|{i+1:^5}|{isi[i]:^99}|")
-        garis("=")
+        garis("═")
     while True :
         try:
             pilih = int (input ("masukkan peraturan yang ingin di update >> ")) - 1
@@ -1077,11 +1157,11 @@ def update_peraturan():
     isi[pilih]=pengganti
     clear()
     cover()
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^5}|{border[1]:^99}|")
-    garis("=")
+    garis("═")
     print (f"|{pilih + 1:^5}|{isi[pilih]:^99}|")
-    garis("=")
+    garis("═")
     with open (f"dataadmin/ketentuan.csv", mode="w", newline="\n") as file:
         writer = csv.writer(file)
         for i in range (len(isi)):
@@ -1098,12 +1178,12 @@ def hapus_peraturan():
     print("HAPUS PERATURAN\n".center(107))
     isi = penampung_peraturan()
     border = ["NO", "ISI"]
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^5}|{border[1]:^99}|")
-    garis("=")
+    garis("═")
     for i in range (len (isi)):
         print (f"|{i+1:^5}|{isi[i]:^99}|")
-        garis("=")
+        garis("═")
     while True :
         try:
             pilih = int (input ("masukkan peraturan yang ingin di hapus >> ")) - 1
@@ -1117,11 +1197,11 @@ def hapus_peraturan():
             continue
     clear()
     cover()
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^5}|{border[1]:^99}|")
-    garis("=")
+    garis("═")
     print (f"|{pilih + 1:^5}|{isi[pilih]:^99}|")
-    garis("=")
+    garis("═")
     while True:
         try :
             yakin = input ("apakah yakin untuk menghapus peraturan ini (y/n)").lower()
@@ -1206,7 +1286,7 @@ def tambah_user():
     print ("\n")
     print ("TAMBAH USER\n\n".center(107)) 
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
-    garis("=")
+    garis("═")
     nama = input ("masukkan nama lengkap User >> ")
     nik = int (input ("masukkan NIK User >>"))
     tanggal_lahir = input ("masukkan tanggal lahir User (contoh : 02-02-2001)>>") 
@@ -1239,7 +1319,7 @@ def tambah_user():
                 break 
         except ValueError as error: 
             termcolor.cprint (error, "red") 
-    garis("=") 
+    garis("═") 
     with open ("dataadmin/datauser.csv", mode = "a", newline = "\n") as file : 
         border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
         writer = csv.DictWriter (file, fieldnames=border) 
@@ -1375,12 +1455,12 @@ def hapus_user():
 def penampil_jukir():
     nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
     border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
-    garis("=")
+    garis("═")
     for i in range (len(nama_jukir)):
         print (f"|{i+1:^4}|{nama_jukir[i]:^20}|{nik_jukir[i]:^17}|{telepon_jukir[i]:^17}|{username_jukir[i]:^21}|{password_jukir[i]:^21}|")
-        garis("=")
+        garis("═")
 def monitoring_jukir():
     clear()
     cover()
@@ -1394,8 +1474,9 @@ def monitoring_jukir():
     2. UPDATE DATA JUKIR
     3. CEK ABSENSI DAN KONTRIBUSI JUKIR
     4. HAPUS DATA JUKIR
+    5. KEMBALI KE MENU ADMIN 
     """)
-    garis("=")
+    garis("═")
     while True :
         try :
             pilih = int(input("masukkan opsi yang dipilih >> "))
@@ -1467,7 +1548,7 @@ def tambah_jukir ():
             enter()
             continue
 
-    garis("=")
+    garis("═")
     with open("dataadmin/loginjukir.csv", mode="a", newline="\n") as file:
         border = ["nama", "nik", "nomor telepon", "username", "password"]
         writer = csv.DictWriter(file, fieldnames=border)
@@ -1493,11 +1574,11 @@ def update_jukir():
     clear()
     cover()
     border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
-    garis("=")
+    garis("═")
     print (f"|{pilih+1:^4}|{nama_jukir[pilih]:^20}|{nik_jukir[pilih]:^17}|{telepon_jukir[pilih]:^17}|{username_jukir[pilih]:^21}|{password_jukir[pilih]:^21}|")
-    garis("=")
+    garis("═")
     while True :
         try:
             bagian = input ("masukkan bagian yang ingin diupdate (nama/nik/telepon/username/password)>> ").lower()
@@ -1570,11 +1651,11 @@ def hapus_jukir():
     clear()
     cover()
     border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
-    garis("=")
+    garis("═")
     print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^17}|{border[3]:^17}|{border[4]:^21}|{border[5]:^21}|")
-    garis("=")
+    garis("═")
     print (f"|{pilih+1:^4}|{nama_jukir[pilih]:^20}|{nik_jukir[pilih]:^17}|{telepon_jukir[pilih]:^17}|{username_jukir[pilih]:^21}|{password_jukir[pilih]:^21}|")
-    garis("=")
+    garis("═")
     while True :
         try :
             yakin = input("apakah yakin untuk menghapus data jukir (y/n) >> ").lower()
@@ -1691,7 +1772,7 @@ def daftarkan_kendaraan_admin():
     tipe_kendaraan = input ("masukkan tipe kendaraan (Toyota Avanza / Honda Vario) >> ")
     tahun_kendaraan = input ("masukkan tahun kendaraan (2020) >> ")
     warna_kendaraan = input ("masukkan warna kendaraan (merah/abu-abu) >> ")
-    garis("=")
+    garis("═")
     with open (f"datauser/{atas_nama}/{jenis_kendaraan}.csv", mode="a", newline="\n") as file :
         writer = csv.writer(file)
         writer.writerow([atas_nama,jenis_kendaraan,plat_nomor, tipe_kendaraan, tahun_kendaraan, warna_kendaraan])
@@ -1925,22 +2006,164 @@ def monitoring_penitipan_barang():
             termcolor.cprint(error,"red")
             enter()
             continue
-    
+
 def tambah_penitipan_barang_admin():
     clear()
     cover(b=110)
+    rak_barang = penampung_rak()
+ 
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    waktu_sekarang = dt.datetime.now()
+    waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
     print("")
-    print("MONITORING PENITIPAN BARANG\n".center(110))
+    print("TITIPKAN BARANG USER\n".center(110))
     penampil_rak_barang_tersedia()
     garis("=",b=110)
-    
+    while True :
+        try :
+            pemilik = input ("masukkan nama pemilik / user >> ")
+            if pemilik in user :
+                break
+            else :
+                raise ValueError ("pemilik tidak terdaftar")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue 
+    index_rak = []
+    while True :
+        a = 0
+        try :
+            rak = input ("pilih rak kosong yang tersedia >> ").capitalize()
+            for i in range (len(rak_barang[0])):
+                if rak == rak_barang[0][i] and rak_barang[1][i] == "KOSONG":
+                    index_rak.append(i)
+                    a += 1 
+                    break
+                else :
+                    # raise ValueError("rak barang tidak tersedia")
+                    continue
+            if a == 1 :
+                break
+            else :
+                raise ValueError ("rak barang tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    nama_barang = input ("masukkan nama barang >> ")
+    rak_barang[1][index_rak[0]] = "TERISI"
+    with open ("dataadmin/rakpenitipanbarang.csv", mode = "w", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow(rak_barang[0])
+    with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow(rak_barang[1])
+    with open (f"datauser/{pemilik}/titipbarang.csv", mode = "a", newline="\n") as file :
+        writer = csv.writer(file)
+        writer.writerow([pemilik,rak,nama_barang,waktu_sekarang])
+    termcolor.cprint("barang berhasil ditambahkan", "green")
+    enter()
+    clear()
+    monitoring_penitipan_barang()
 
-
-
+def penampung_barang_terambil_admin(nama_user):
+    pemilik = []
+    rak = []
+    nama_barang = []
+    tanggal_masuk = []
+    with open (f"datauser/{nama_user}/titipbarang.csv", mode="r")as file :
+        reader = csv.reader(file)
+        for i in reader :
+            pemilik.append(i[0])
+            rak.append(i[1])
+            nama_barang.append(i[2])
+            tanggal_masuk.append(i[3])
+    return pemilik,rak,nama_barang,tanggal_masuk
+        
 
 def tandai_barang_terambil_admin():
-    pass
+    clear()
+    cover(b=110)
+    rak_barang = penampung_rak()
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    while True :
+        try :
+            nama_user = input ("masukkan nama user yang barangnya ingin diambil >> ").lower()
+            if nama_user in user :
+                break
+            else :
+                raise ValueError ("user tidak ditemukan")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    clear()
+    cover(b=110)
+    waktu_sekarang = dt.datetime.now()
+    waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
+    pemilik,rak,nama_barang,tanggal_masuk = penampung_barang_terambil_admin(nama_user)
+    print ("")
+    print ("LIST BARANG DALAM RAK\n".center(110))
+    border = ["NO","PEMILIK","RAK BARANG","NAMA BARANG", "TANGGAL MASUK"]
+    garis("=",b=110)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+    garis("=",b=110)
+    for i in range (len(pemilik)):
+        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
+        garis("=",b=110)
+    garis("=",b=110)
+    pilih = int (input("pilih barang yang ingin diambil >> ")) - 1 
+    index_rak = []
+    for i in range(len(rak_barang[0])):
+        if rak[pilih]==rak_barang[0][i]:
+            index_rak.append(i)
+    rak_barang[1][index_rak[0]] = "KOSONG"
+    clear()
+    cover(b=110)
+    garis("=",b=110)
+    print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
+    garis("=",b=110)
+    print (f"|{pilih+1:^6}|{pemilik[pilih]:^30}|{rak[pilih]:^20}|{nama_barang[pilih]:^28}|{tanggal_masuk[pilih]:^20}|")
+    garis("=",b=110)
+    while True :
+        try :
+            yakin = input ("yakin ingin mengambil barang ini? (y/n) >> ").lower()
+            if yakin == "y" :
+                with open (f"datauser/{nama_user}/riwayat_titip_barang.csv",mode = "a", newline="\n") as file:
+                    writer = csv.writer(file)
+                    writer.writerow ([pemilik[pilih],rak[pilih],nama_barang[pilih],tanggal_masuk[pilih],waktu_sekarang])
+                pemilik.pop(pilih)
+                rak.pop(pilih)
+                nama_barang.pop(pilih)
+                tanggal_masuk.pop(pilih)
+                with open (f"datauser/{nama_user}/titipbarang.csv", mode = "w",newline="\n")as file:
+                    writer = csv.writer(file)
+                    for i in range (len(pemilik)):
+                        writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
+                with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
+                    writer = csv.writer(file)
+                    writer.writerow(rak_barang[0])
+                with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
+                    writer = csv.writer(file)
+                    writer.writerow(rak_barang[1])
+                termcolor.cprint("barang berhasil ditambahkan","green")
+                enter()
+                clear()
+                monitoring_penitipan_barang()
+                break
+            elif yakin == "n":
+                enter()
+                clear()
+                monitoring_penitipan_barang()
+                break
+            else :
+                raise ValueError ("inputan tidak valid")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+
 #____________________________________________________RIWAYAT PENITIPAN BARANG_____________________________________________________
 def penampung_riwayat_barang_admin():
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
@@ -1979,12 +2202,8 @@ def riwayat_penitipan_barang_admin():
     monitoring_penitipan_barang()
 
 if __name__ == "__main__":
-    # monitoring_jukir()
-    # login_user()
-    # tambah_peraturan()
-    # halaman_awal()
-    # penampil_barang()
-    # titipkan_barang_user()
-    # riwayat_penitipan_barang_admin()
-    # monitoring_penitipan_barang()
-    tambah_penitipan_barang_admin()
+    halaman_awal()
+    # tambah_penitipan_barang_admin()
+    # tandai_barang_terambil_admin()
+    # infokan()
+
