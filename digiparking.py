@@ -26,7 +26,12 @@ def enter (a=""):
     enter = input (f"{a}tekan [ENTER] untuk melanjutkan >> ") 
 
 def transisi(b=107):
-    print ("══")
+    print ("═"*b)
+    print ("")
+    print ("LOADING...\n".center(b))
+    print ("═"*b)
+    time.sleep(1.5)
+
 
 def exit():
     clear()
@@ -54,26 +59,31 @@ def halaman_awal ():
             if pilih == 1 : 
                 enter()
                 clear() 
+                transisi()
                 registrasi() 
                 break 
             elif pilih == 2 : 
                 enter() 
-                clear() 
+                clear()
+                transisi() 
                 login_user () 
                 break
             elif pilih == 3 :
                 enter()
                 clear() 
+                transisi()
                 login_jukir()
                 break
             elif pilih == 4 :
                 enter()
                 clear() 
+                transisi()
                 login_admin()
                 break
             elif pilih == 5 :
                 enter()
                 clear()
+                transisi()
                 exit()
                 break
             else : 
@@ -163,6 +173,7 @@ def registrasi ():
             writer.writerow("")
         termcolor.cprint ("registrasi berhasil, silahkan login", "green")
         enter()
+        transisi()
         halaman_awal() 
         
 def login_user ():
@@ -181,6 +192,8 @@ def login_user ():
         if percobaan > 3 :
             termcolor.cprint("anda telah mencoba 3 kali, silahkan tunggu beberapa saat untuk mencoba lagi","red") 
             enter()
+            clear()
+            transisi()
             halaman_awal()
             break
         else:
@@ -200,7 +213,9 @@ def login_user ():
                 termcolor.cprint ("login berhasil", "green")
                 if not os.path.exists(f"datauser/{nama_profil[0]}"): 
                     os.makedirs(f"datauser/{nama_profil[0]}")
-                enter() 
+                enter()
+                clear() 
+                transisi()
                 menu_user()
                 break 
             else : 
@@ -240,10 +255,11 @@ def login_jukir():
         if percobaan > 3 :
             termcolor.cprint("anda telah mencoba 3 kali, silahkan tunggu beberapa saat untuk mencoba lagi","red")
             enter()
+            clear()
+            transisi()
             halaman_awal()
             break
         else : 
-            
             username = input ("masukkan username anda >> ")
             password = input ("masukkan password anda >> ")
             garis("═")
@@ -255,6 +271,8 @@ def login_jukir():
                     telepon_jukir_profil.append(telepon_jukir[i])  
                     termcolor.cprint("LOGIN BERHASIL", "green")
                     enter()
+                    clear()
+                    transisi()
                     menu_jukir()
                     break
                 else :
@@ -282,6 +300,7 @@ def login_admin():
         if percobaan > 3 :
             termcolor.cprint("anda telah mencoba 3 kali, silahkan tunggu beberapa saat untuk mencoba lagi","red")
             enter()
+            transisi()
             halaman_awal()
             break
         else : 
@@ -320,37 +339,44 @@ def menu_user():
             if pilih == 1 : 
                 enter()
                 clear()
+                transisi()
                 ketentuan_digiparking ()
                 break  
             elif pilih == 2 :
                 enter ()
                 clear()
+                transisi()
                 cek_profil_user() 
                 break  
             elif pilih == 3 :
                 enter()
                 clear()
+                transisi()
                 daftarakan_kendaraan()
                 break  
             elif pilih == 4 :  
                 enter()
                 clear()
+                transisi()
                 booking_parkir_user()           
                 break
             elif pilih == 5 :
                 enter()
                 clear()
+                transisi()
                 penitipan_barang_user()        
                 break
                  
             elif pilih == 6 :
                 enter()
                 clear()
+                transisi()
                 riwayat_booking_user()
                 break 
             elif pilih == 7 :
                 enter()
                 clear()
+                transisi()
                 halaman_awal()
                 break
             else :
@@ -365,6 +391,7 @@ def ketentuan_digiparking ():
     penampil_peraturan()
     enter()
     clear()
+    transisi()
     menu_user()
     
 def cek_profil_user ():
@@ -380,6 +407,7 @@ def cek_profil_user ():
     garis("═")
     enter ()
     clear()
+    transisi()
     menu_user()
 #__________________________________________________________________Kendaraan_____________________________________________________
 def daftarakan_kendaraan():
@@ -403,6 +431,8 @@ def daftarakan_kendaraan():
     pilih = int (input("\tsilahkan masukkan pilihan >> : "))
     if pilih == 1 :
         enter(a="\t")
+        clear()
+        transisi()
         tambah_kendaraan()
     elif pilih == 2 :
         enter(a="\t")
@@ -416,14 +446,17 @@ def daftarakan_kendaraan():
         if mana == 1:
             enter(a="\t")
             clear()
+            transisi()
             hapus_mobil()
         elif mana == 2 :
             enter(a="\t")
             clear()
+            transisi()
             hapus_motor()
     elif pilih == 3 :
         enter(a="\t")
         clear()
+        transisi()
         menu_user()
 
 def tambah_kendaraan():
@@ -448,13 +481,13 @@ def tambah_kendaraan():
     tahun_kendaraan = input ("masukkan tahun kendaraan (2020) >> ")
     warna_kendaraan = input ("masukkan warna kendaraan (merah/abu-abu) >> ")
     garis("═")
-    if not os.path.exists(f"datauser/{nama_profil[0]}") :
-        os.makedirs(f"datauser/{nama_profil[0]}")
     with open (f"datauser/{nama_profil[0]}/{jenis_kendaraan}.csv", mode="a", newline="\n") as file :
         writer = csv.writer(file)
         writer.writerow([nama_profil[0],jenis_kendaraan,plat_nomor, tipe_kendaraan, tahun_kendaraan, warna_kendaraan])
     termcolor.cprint("kendaraan berhasil di inputkan","green")
     enter()
+    clear()
+    transisi()
     daftarakan_kendaraan()
 #_______________________________________ MOBIL__________________________________    
 def penampung_mobil():
@@ -524,6 +557,7 @@ def hapus_mobil():
     elif yakin == "n":
         enter()
         clear()
+        transisi()
         daftarakan_kendaraan()
     with open (f"datauser/{nama_profil[0]}/mobil.csv", mode = "w", newline = "\n") as file:
         writer = csv.writer(file)
@@ -532,6 +566,7 @@ def hapus_mobil():
     termcolor.cprint("Data berhasil dihapus", "green")
     enter()
     clear()
+    transisi()
     daftarakan_kendaraan()
 
 #__________________________________________________MOTOR_____________________________________________________
@@ -602,6 +637,7 @@ def hapus_motor():
     elif yakin == "n":
         enter()
         clear()
+        transisi()
         daftarakan_kendaraan()
     with open (f"datauser/{nama_profil[0]}/motor.csv", mode = "w", newline = "\n") as file:
         writer = csv.writer(file)
@@ -610,6 +646,7 @@ def hapus_motor():
     termcolor.cprint("Data berhasil dihapus", "green")
     enter()
     clear()
+    transisi()
     daftarakan_kendaraan()
 
 
@@ -652,21 +689,25 @@ def penitipan_barang_user():
             if pilih == 1 :
                 enter()
                 clear()
+                transisi()
                 titipkan_barang_user()
                 break
             elif pilih == 2 :
                 enter()
                 clear()
+                transisi()
                 ambil_barang_user()
                 break
             elif pilih == 3 :
                 enter()
                 clear()
+                transisi()
                 riwayat_penitipan_user()
                 break
             elif pilih == 4 :
                 enter()
                 clear()
+                transisi()
                 menu_user()
                 break
             else :
@@ -769,7 +810,7 @@ def titipkan_barang_user():
             a = 0
             rak = input("Masukkan nomor rak yang tersedia : ").capitalize()
             for i in range (len(rak_barang[0])):
-                if rak == rak_barang[0][i]:
+                if rak == rak_barang[0][i] and rak_barang[1][i] == "KOSONG":
                     index_rak.append(i)
                     a += 1 
                     break
@@ -796,6 +837,7 @@ def titipkan_barang_user():
     termcolor.cprint("barang berhasil di titipkan", "green")
     enter()
     clear()
+    transisi()
     penitipan_barang_user()
 
 def ambil_barang_user():
@@ -856,10 +898,13 @@ def ambil_barang_user():
                         writer.writerow(rak_barang[1])
                     enter()
                     clear()
+                    transisi()
                     penitipan_barang_user()
                     break
                 elif yakin == "n" :
                     enter()
+                    clear()
+                    transisi()
                     penitipan_barang_user()
                     break
                 else :
@@ -908,6 +953,7 @@ def riwayat_penitipan_user():
     garis("=",b=131)
     enter()
     clear()
+    transisi()
     penitipan_barang_user()
 
 #___________________________________________________________________ RIWAYAT BOOKING USER____________________________________________________
@@ -932,18 +978,26 @@ def menu_jukir():
             pilih = int (input("Masukkan pilihan >> "))
             if pilih == 1 :
                 enter()
+                clear()
+                transisi()
                 cek_profil_jukir()
                 break
             elif pilih == 2 :
                 enter ()
+                clear()
+                transisi()
                 absensi_jukir()
                 break
             elif pilih == 3 :
                 enter ()
+                clear()
+                transisi()
                 cek_parkir_tersedia_jukir()
                 break
             elif pilih == 4 :
                 enter ()
+                clear()
+                transisi()
                 cek_booking_parkir_jukir()
                 break
             elif pilih == 5 :
@@ -952,6 +1006,8 @@ def menu_jukir():
                 break
             elif pilih == 6 :
                 enter()
+                clear()
+                transisi()
                 halaman_awal()
                 break
             else :
@@ -972,6 +1028,7 @@ def cek_profil_jukir():
     garis("═")
     enter()
     clear()
+    transisi()
     menu_jukir()
 
 def absensi_jukir():
@@ -1003,32 +1060,40 @@ def menu_admin():
             if pilih == 1 :
                 enter()
                 clear()
+                transisi()
                 monitoring_peraturan()
                 break
             elif pilih == 2 :
                 enter()
                 clear()
+                transisi()
                 monitoring_user()
                 break
             elif pilih == 3 :
                 enter()
                 clear()
+                transisi()
                 monitoring_jukir()
             elif pilih == 4 :
                 enter()
                 clear()
+                transisi()
                 monitoring_kendaraan_user()
                 break
             elif pilih == 5 :
                 enter()
                 clear()
+                transisi()
                 monitoring_booking_parkir()
             elif pilih == 6 :
                 enter()
                 clear()
+                transisi()
                 monitoring_penitipan_barang()
             elif pilih == 7 :
                 enter()
+                clear()
+                transisi()
                 halaman_awal()
                 break
             else :
@@ -1058,21 +1123,25 @@ def monitoring_peraturan():
             if pilih == 1 :
                 enter()
                 clear()
+                transisi()
                 tambah_peraturan()
                 break
             elif pilih == 2 :
                 enter()
                 clear()
+                transisi()
                 update_peraturan()
                 break
             elif pilih == 3 :
                 enter()
                 clear()
+                transisi()
                 hapus_peraturan()
                 break
             elif pilih == 4 :
                 enter()
                 clear()
+                transisi()
                 menu_admin()
             else :
                 raise ValueError ("opsi tidak tersedia")
@@ -1125,6 +1194,8 @@ def tambah_peraturan():
         writer.writerow({"isi" : isi})
     termcolor.cprint("peraturan berhasil ditambahkan ","green")
     enter ()
+    clear()
+    transisi()
     monitoring_peraturan()
 
 def update_peraturan():
@@ -1168,6 +1239,8 @@ def update_peraturan():
             writer.writerow([isi[i]])
     termcolor.cprint("peraturan berhasil di update", "green")
     enter()
+    clear()
+    transisi()
     monitoring_peraturan()
 
 
@@ -1213,10 +1286,14 @@ def hapus_peraturan():
                         writer.writerow([isi[i]])
                 termcolor.cprint("peraturan berhasil di update", "green")
                 enter()
+                clear()
+                transisi()
                 monitoring_peraturan()
                 break
             elif yakin == "n" :
                 enter()
+                clear()
+                transisi()
                 monitoring_peraturan()
                 break
             else :
@@ -1257,21 +1334,25 @@ def monitoring_user():
             if pilih == 1 :
                 enter()
                 clear()
+                transisi()
                 tambah_user()
                 break
             elif pilih == 2 :
                 enter()
                 clear()
+                transisi()
                 update_user()
                 break
             elif pilih == 3 :
                 enter()
                 clear()
+                transisi()
                 hapus_user()
                 break
             elif pilih == 4 :
                 enter()
                 clear()
+                transisi()
                 menu_admin()
                 break
             else :
@@ -1324,9 +1405,23 @@ def tambah_user():
         border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
         writer = csv.DictWriter (file, fieldnames=border) 
         writer.writerow ( {"nama lengkap" : nama, "nik" :  nik,"tanggal lahir" : tanggal_lahir,"nomor hp" : nomorhp, "username" : username, "password" : password2} ) 
+    os.makedirs(f"datauser/{nama}")
+    with open (f"datauser/{nama}/mobil.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/motor.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/riwayat_titip_barang.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/titipbarang.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
     termcolor.cprint ("User berhasil ditambahkan", "green") 
     enter()
     clear()
+    transisi()
     monitoring_user()
 
 def update_user():
@@ -1410,6 +1505,7 @@ def update_user():
         if indikator == 1 :
             enter()
             clear()
+            transisi()
             monitoring_user()
             break
         else :
@@ -1450,6 +1546,7 @@ def hapus_user():
     else :
         enter()
         clear()
+        transisi()
         monitoring_user()
 #_________________MONITORING JUKIR________________________
 def penampil_jukir():
@@ -1555,6 +1652,8 @@ def tambah_jukir ():
         writer.writerow({"nama" : nama, "nik" : nik, "nomor telepon": telpon,"username":username, "password":password})
     termcolor.cprint("jukir berhasil ditambahkan", "green")
     enter()
+    clear()
+    transisi()
     monitoring_jukir()
 
 def update_jukir():
@@ -1619,11 +1718,13 @@ def update_jukir():
             if lagi == "y":
                 enter()
                 clear()
+                transisi()
                 update_jukir()
                 break
             elif lagi == "n" :
                 enter()
                 clear()
+                transisi()
                 monitoring_jukir()
             else :
                 raise ValueError("inputan yang anda masukkan tidak valid")
@@ -1948,10 +2049,13 @@ def penampung_barang_admin():
         with open(f"datauser/{i}/titipbarang.csv", mode="r") as file :
             reader = csv.reader(file)
             for a in reader :
-                pemilik.append(a[0])
-                rak.append(a[1])
-                nama_barang.append(a[2])
-                tanggal_masuk.append(a[3])
+                if a == [] :
+                    continue
+                else :
+                    pemilik.append(a[0])
+                    rak.append(a[1])
+                    nama_barang.append(a[2])
+                    tanggal_masuk.append(a[3])
     return pemilik,rak,nama_barang,tanggal_masuk
 
 def penampil_barang_admin():
@@ -2176,11 +2280,14 @@ def penampung_riwayat_barang_admin():
         with open(f"datauser/{i}/riwayat_titip_barang.csv",mode="r")as file:
             reader = csv.reader(file)
             for a in reader:
-                pemilik.append(a[0])
-                rak.append(a[1])
-                nama_barang.append(a[2])
-                tanggal_masuk.append(a[3])
-                tanggal_keluar.append(a[4])
+                if a == []:
+                    continue
+                else :
+                    pemilik.append(a[0])
+                    rak.append(a[1])
+                    nama_barang.append(a[2])
+                    tanggal_masuk.append(a[3])
+                    tanggal_keluar.append(a[4])
     return pemilik,rak,nama_barang,tanggal_masuk,tanggal_keluar
 
 def riwayat_penitipan_barang_admin():
@@ -2203,6 +2310,7 @@ def riwayat_penitipan_barang_admin():
 
 if __name__ == "__main__":
     halaman_awal()
+    # transisi()
     # tambah_penitipan_barang_admin()
     # tandai_barang_terambil_admin()
     # infokan()
