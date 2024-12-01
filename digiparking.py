@@ -29,6 +29,18 @@ def enter (a=""):
 def transisi(b=107):
     print ("═"*b)
     print ("")
+    print ("LOADING.\n".center(b))
+    print ("═"*b)
+    time.sleep(0.5)
+    clear()
+    print ("═"*b)
+    print ("")
+    print ("LOADING..\n".center(b))
+    print ("═"*b)
+    time.sleep(0.5)
+    clear()
+    print ("═"*b)
+    print ("")
     print ("LOADING...\n".center(b))
     print ("═"*b)
     time.sleep(0.5)
@@ -283,6 +295,7 @@ def login_jukir():
                     telepon_jukir_profil.append(telepon_jukir[i]) 
                     username_pasword_jukir_profil.append([username,password])
                     login +=1
+                    break
                 else :
                     continue
             if login == 1 :     
@@ -291,6 +304,7 @@ def login_jukir():
                 clear()
                 transisi()
                 menu_jukir()
+                break
             else :
                 termcolor.cprint ("login tidak berhasil, silahkan masukkan username dan password yang benar", "red") 
                 percobaan +=1
@@ -1559,9 +1573,9 @@ def ambil_barang_user():
         garis("═",b=110)
         print (f"|{pilih+1:^6}|{pemilik[pilih]:^30}|{rak[pilih]:^20}|{nama_barang[pilih]:^28}|{tanggal_masuk[pilih]:^20}|")
         garis("═",b=110)
-        yakin = input("apakah anda yakin ingin mengambil barang ini ? (y/n) >> ").lower()
         while True :
             try:
+                yakin = input("apakah anda yakin ingin mengambil barang ini ? (y/n) >> ").lower()
                 if yakin == "y" :
                     with open (f"datauser/{nama_profil[0]}/riwayat_titip_barang.csv", mode="a",newline="\n") as file :
                         border = ["pemilik","rak" ,"nama barang", "tanggal masuk","tanggal keluar"]
@@ -1592,12 +1606,15 @@ def ambil_barang_user():
                     transisi()
                     penitipan_barang_user()
                     break
+                elif yakin == "" :
+                    raise ValueError("inputan tidak boleh kosong")
                 else :
                     raise ValueError("inputan tidak valid")
             except ValueError as error :
                 termcolor.cprint(error,"red")
                 enter()
                 continue
+
 def penampung_riwayat_penitipan_barang_user():
     pemilik = []
     rak = []
@@ -1848,6 +1865,7 @@ def cek_parkir_tersedia_jukir():
         1. LIHAT KETERSEDIAAN PARKIR MOTOR
         2. KEMBALI KE MENU
 """)
+    garis("═",b=110)
     while True :
         try:
             pilih = int(input("masukkan opsi yang dipilih >>"))
@@ -1878,7 +1896,9 @@ def cek_parkir_tersedia_jukir():
     menu_jukir()
 
 def cek_booking_parkir_jukir():
-    pass
+    clear()
+    cover()
+    enter()
 def cek_kendaraan_terparkir():
     pass
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ADMIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -2438,6 +2458,7 @@ def monitoring_jukir():
             elif pilih == 2 :
                 enter()
                 clear()
+                transisi()
                 update_jukir()
             elif pilih == 3 :
                 enter()
@@ -2541,9 +2562,7 @@ def update_jukir():
             if bagian not in ["nama", "nik", "telepon", "username", "password"]:
                 raise ValueError ("masukkan bagian yang ada")
             elif bagian == "nama" :
-                pengganti = input ("masukkan nama pengganti  >> ")
-                nama_jukir[pilih] = pengganti
-                break
+                raise ValueError ("nama tidak boleh diganti")
             elif bagian == "nik" :
                 pengganti = input ("masukkan nik pengganti pengganti  >> ")
                 nik_jukir[pilih] = pengganti
@@ -2553,9 +2572,7 @@ def update_jukir():
                 telepon_jukir[pilih] = pengganti
                 break
             elif bagian == "username" :
-                pengganti = input ("masukkan username pengganti  >> ")
-                username_jukir[pilih] = pengganti
-                break
+                raise ValueError ("username tidak boleh diganti")
             elif bagian == "password" :
                 pengganti = input ("masukkan password pengganti  >> ")
                 password_jukir[pilih] = pengganti
@@ -2590,10 +2607,127 @@ def update_jukir():
             enter()
             continue
 
+def penampung_kehadiran_jukir_admin():
+    tampungan_kehadiran_jukir_1 = []
+    tampungan_kehadiran_jukir_2 = []
+    # username_pasword_jukir_profil =[["jukir1","indo"]]
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    for i in username_jukir:
+        with open (f"datajukir/kehadiran{i}.csv", mode="r") as file:
+            reader = csv.reader(file)
+            for i in reader :
+                if i == [] :
+                    continue
+                elif i[0] == nama_jukir[0]:
+                    tampungan_kehadiran_jukir_1.append(i)
+                elif i[0] == nama_jukir[1]:
+                    tampungan_kehadiran_jukir_2.append(i)
+    return tampungan_kehadiran_jukir_1, tampungan_kehadiran_jukir_2
+
 
 def cek_absensi_kontribusi_jukir():
-    tampungan_kehadiran_jukir = penampung_kehadiran_jukir()
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
     diparkjirkan_jukir_1,diparkjirkan_jukir_2 = penampung_diparkirkan()
+    tampungan_kehadiran_jukir_1, tampungan_kehadiran_jukir_2 = penampung_kehadiran_jukir_admin()
+    clear()
+    cover()
+    print ("")
+    print ("KEHADIRAN DAN KONTRIBUSI JUKIR\n".center(107))
+    garis("═")
+    border = ["NO","NAMA JUKIR", "JUMLAH KEHADIRAN", "JUMLAH KONTRIBUSI"]
+    garis("═")
+    print (f"|{border[0]:^4}|{border[1]:^39}|{border[2]:^29}|{border[3]:^30}|")
+    garis("═")
+    print (f"|{"1":^4}|{nama_jukir[0]:^39}|{len(tampungan_kehadiran_jukir_1):^29}|{diparkjirkan_jukir_1[0]:^30}|")
+    garis("═")
+    print (f"|{"2":^4}|{nama_jukir[1]:^39}|{len(tampungan_kehadiran_jukir_2):^29}|{diparkjirkan_jukir_2[0]:^30}|")
+    garis("═")
+    garis("═")
+    print ("""
+        1. LIHAT RIWAYAT KEHADIRAN JUKIR
+        2. KEMBALI KE MENU 
+""")
+    garis("═")
+    while True :
+        try:
+            pilih = int (input ("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                enter()
+                clear()
+                transisi()
+                riwayat_kehadiran_jukir()
+            elif pilih == 2 : 
+                enter()
+                clear()
+                transisi()
+                monitoring_jukir()
+            else :
+                raise ValueError ("opsi tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint (error,"red")
+            enter()
+            continue
+
+def riwayat_kehadiran_jukir ():
+    nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
+    tampungan_kehadiran_jukir_1, tampungan_kehadiran_jukir_2 = penampung_kehadiran_jukir_admin()
+    clear()
+    cover()
+    print ("")
+    print ("RIWAYAT KEHADIRAN JUKIR\n".center(107))
+    garis("═")
+    border = ["NO","NAMA JUKIR", "USERNAME JUKIR", "WAKTU KEHADIRAN"]
+    garis("═")
+    print (f"|{border[0]:^4}|{border[1]:^39}|{border[2]:^25}|{border[3]:^34}|")
+    garis("═")
+    for i in range (len(tampungan_kehadiran_jukir_1)) :
+        print (f"|{i+1:^4}|{tampungan_kehadiran_jukir_1[i][0]:^39}|{username_jukir[0]:^25}|{tampungan_kehadiran_jukir_1[i][1]:^34}|")
+        garis("═")
+    garis("═")
+    print ("""
+        1. LIHAT KEHADIRAN JUKIR LAIN
+        2. KEMBALI KE MENU
+""")
+    
+    garis("═")
+    while True:
+        try:
+            pilih = int (input ("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                enter()
+                clear()
+                transisi()
+                clear()
+                cover()
+                print ("")
+                print ("RIWAYAT KEHADIRAN JUKIR\n".center(107))
+                garis("═")
+                border = ["NO","NAMA JUKIR", "USERNAME JUKIR", "WAKTU KEHADIRAN"]
+                garis("═")
+                print (f"|{border[0]:^4}|{border[1]:^39}|{border[2]:^25}|{border[3]:^34}|")
+                garis("═")
+                for i in range (len(tampungan_kehadiran_jukir_2)) :
+                    print (f"|{i+1:^4}|{tampungan_kehadiran_jukir_2[i][0]:^39}|{username_jukir[1]:^25}|{tampungan_kehadiran_jukir_2[i][1]:^34}|")
+                    garis("═")
+                garis("═")
+                enter()
+                clear()
+                transisi()
+                cek_absensi_kontribusi_jukir()
+            elif pilih == 2 :
+                enter()
+                clear()
+                transisi()
+                cek_absensi_kontribusi_jukir()
+            else :
+                raise ValueError ("opsi yang dipilih tidak tersedia")
+        except ValueError as error:
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+
+
+
 def hapus_jukir():
     nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
     clear()
@@ -3203,9 +3337,11 @@ def riwayat_penitipan_barang_admin():
 
 if __name__ == "__main__":
     # login_user()
+    halaman_awal()
     # penampung_diparkirkan()
     # parkir_user()
-   login_jukir()
+#    login_jukir()
     # kehadiran_kontribusi_jukir()
     # kehadiran_jukir()
-
+    # cek_absensi_kontribusi_jukir()
+    # riwayat_kehadiran_jukir()
