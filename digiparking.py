@@ -134,9 +134,22 @@ def registrasi ():
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
 
     while True : 
-        nama = input ("masukkan nama lengkap anda >> ")
-        nik = int (input ("masukkan NIK anda >>"))
+        while True :
+            try:
+                nama = input ("masukkan nama lengkap anda >> ")
+                if len(nama) < 4 :
+                    raise ValueError ("nama minimal terdiri dari 4 karakter")
+                elif nama in user :
+                    raise ValueError ("nama yang anda pilih sudah digunakan")
+                else : 
+                    break
+            except ValueError as error :
+                termcolor.cprint (error, "red")
+                enter()
+                continue
+        nik = input ("masukkan NIK anda >>")
         tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001)>>") 
+
         nomorhp =  input ("Masukkan nomor HP >> ") 
         while True : 
             try : 
@@ -361,9 +374,9 @@ def menu_user():
                                         1. KETENTUAN DIGIPARKING
                                         2. CEK PROFIL
                                         3. DAFTARKAN KENDARAAN 
-                                        4. BOOKING PARKIR 
+                                        4. PARKIR 
                                         5. PENITIPAN BARANG 
-                                        7. LOG OUT   
+                                        6. LOG OUT   
 """)
         garis("═")
         try :
@@ -712,7 +725,6 @@ def penampil_slot_parkir_mobil():
     print ("")
     garis("═",b=110)
 
-
 def penampung_slot_parkir_motor():
     slot_parkir_motor = []
     with open ("dataadmin/slotparkirmotor.csv", mode="r") as file :
@@ -827,14 +839,15 @@ def ketersediaan_parkir ():
     print ("")
     print ("KETERSEDIAAN PARKIR".center(110))
     garis("═",b=110)
+    print ("""
+    1. SLOT PARKIR MOBIL
+    2. SLOT PARKIR MOTOR
+    """)
+    garis("═",b=110)
     while True :
         try :
-            pilih = input ("parkir mobil / motor >> ").lower()
-            if pilih == "mobil" :
-                clear()
-                transisi()
-                clear()
-                cover(b = 110)
+            pilih = int(input ("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
                 print ("")
                 penampil_slot_parkir_mobil()
                 garis("═",b=110)
@@ -842,11 +855,7 @@ def ketersediaan_parkir ():
                 clear()
                 transisi()
                 parkir_user()
-            elif pilih == "motor" :
-                clear()
-                transisi()
-                clear()
-                cover(b = 110)
+            elif pilih == 2 :
                 print ("")
                 penampil_slot_parkir_motor()
                 garis("═",b=110)
@@ -870,14 +879,22 @@ def parkir_instan_user ():
     waktu_sekarang = dt.datetime.now()
     waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
     jenis_parkir = "instan"
+    print ("""
+    1. PARKIR MOBIL
+    2. PARKIR MOTOR
+    """)
+    garis("═",b=128)
     while True:
         try:
-            kendaraan = ["motor", "mobil"]
-            jenis_kendaraan_parkir = input ("jenis kendaraan (mobil/motor)>> ").lower()
-            if jenis_kendaraan_parkir in kendaraan :
+            pilih = int (input ("masukkan opsi yang dipilih >> "))
+            if pilih == 1  :
+                jenis_kendaraan_parkir = "mobil"
+                break
+            if pilih == 2  :
+                jenis_kendaraan_parkir = "motor"
                 break
             else :
-                raise ValueError("input yang anda masukkan tidak tersedia, silahkan coba lagi")
+                raise ValueError("opsi yang dipilih tidak tersedia")
         except ValueError as error :
             termcolor.cprint(error, "red")
             enter()
@@ -914,7 +931,7 @@ def parkir_instan_user ():
         try :
             pilih_slot_parkir = input ("masukkan slot parkir yang dipilih >> ").capitalize()
             for i in range (len(slot_parkir[0])) :
-                if pilih_slot_parkir == slot_parkir[0][i] and slot_parkir[1][i] == "KOSONG":
+                if pilih_slot_parkir == slot_parkir[0][i] and slot_parkir[1][i] == "-":
                     slot_parkir[1][i] = "TERISI"
                     index_slot_parkir.append(i)
                     indikator += 1
@@ -1045,14 +1062,22 @@ def booking_parkir_user():
     batas_booking = batas_booking.strftime("%d-%m-%Y")
     batas_booking = dt.datetime.strptime(batas_booking,"%d-%m-%Y")
     jenis_parkir = "booking"
+    print ("""
+    1. BOOKING PARKIR MOBIL
+    2. BOOKING PARKIR MOTOR
+    """)
+    garis("═",b=128)
     while True:
         try:
-            kendaraan = ["motor", "mobil"]
-            jenis_kendaraan_parkir = input ("jenis kendaraan (mobil/motor)>> ").lower()
-            if jenis_kendaraan_parkir in kendaraan :
+            pilih = int (input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                jenis_kendaraan_parkir = "mobil"
+                break
+            elif pilih == 2 :
+                jenis_kendaraan_parkir = "motor"
                 break
             else :
-                raise ValueError("input yang anda masukkan tidak tersedia, silahkan coba lagi")
+                raise ValueError("opsi yang dipilih tidak tersedia")
         except ValueError as error :
             termcolor.cprint(error, "red")
             enter()
@@ -1119,7 +1144,7 @@ def booking_parkir_user():
         try :
             pilih_slot_parkir = input ("masukkan slot parkir yang ingin di boking >> ").capitalize()
             for i in range (len(slot_parkir[0])) :
-                if pilih_slot_parkir == slot_parkir[0][i] and slot_parkir[1][i] == "KOSONG":
+                if pilih_slot_parkir == slot_parkir[0][i] and slot_parkir[1][i] == "-":
                     slot_parkir[1][i] = "BOOKED"
                     index_slot_parkir.append(i)
                     indikator += 1
@@ -1249,7 +1274,7 @@ def checkout_parkir_user ():
             harga_harian = 10000
         for i in range (len (slot_parkir[0])):
             if kendaraan_terparkir[pilih_checkout][1] == slot_parkir[0][i] :
-                slot_parkir[1][i] = "KOSONG"
+                slot_parkir[1][i] = "-"
                 break
             else :
                 continue
@@ -1367,14 +1392,14 @@ def penitipan_barang_user():
     print("")
     print("BARANG DITITIPKAN\n".center(110))
     penampil_barang()
-    garis("=",b=110) 
+    garis("═",b=110) 
     print ("""
         1. TITIPKAN BARANG
         2. AMBIL BARANG
         3. RIWAYAT PENITIPAN  
         4. KEMBALI KE MENU 
     """)
-    garis("=",b=110)
+    garis("═",b=110)
     while True :
         try :
             pilih = int (input("masukkan opsi yang dipilih >> "))
@@ -1499,7 +1524,7 @@ def titipkan_barang_user():
             a = 0
             rak = input("Masukkan nomor rak yang tersedia : ").capitalize()
             for i in range (len(rak_barang[0])):
-                if rak == rak_barang[0][i] and rak_barang[1][i] == "KOSONG":
+                if rak == rak_barang[0][i] and rak_barang[1][i] == "-":
                     index_rak.append(i)
                     a += 1 
                     break
@@ -1561,7 +1586,7 @@ def ambil_barang_user():
         for i in range(len(rak_barang[0])):
             if rak[pilih]==rak_barang[0][i]:
                 index_rak.append(i)
-        rak_barang[1][index_rak[0]] = "KOSONG"
+        rak_barang[1][index_rak[0]] = "-"
         enter()
         clear()
         cover(b = 110)
@@ -1591,10 +1616,7 @@ def ambil_barang_user():
                             writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
                     with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
                         writer = csv.writer(file)
-                        writer.writerow(rak_barang[0])
-                    with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
-                        writer = csv.writer(file)
-                        writer.writerow(rak_barang[1])
+                        writer.writerows(rak_barang)
                     enter()
                     clear()
                     transisi()
@@ -1700,7 +1722,9 @@ def menu_jukir():
                 break
             elif pilih == 5 :
                 enter ()
-                cek_kendaraan_terparkir()
+                clear()
+                transisi()
+                cek_kendaraan_terparkir_user()
                 break
             elif pilih == 6 :
                 enter()
@@ -1786,7 +1810,6 @@ def kehadiran_kontribusi_jukir():
 
 def penampung_kehadiran_jukir():
     tampungan_kehadiran_jukir = []
-    # username_pasword_jukir_profil =[["jukir1","indo"]]
     with open (f"datajukir/kehadiran{username_pasword_jukir_profil[0][0]}.csv", mode="r") as file:
         reader = csv.reader(file)
         for i in reader :
@@ -1808,8 +1831,6 @@ def kehadiran_jukir():
             tanggal = dt.datetime.strptime(i[1],"%d-%m-%Y %H:%M")
             tanggal = tanggal.strftime("%d-%m-%Y")
             tanggal_absen.append(tanggal)
-    # nama_profil = ["rohmat alim"]
-    # username_pasword_jukir_profil =[["jukir1","indo"]]
     waktu_sekarang = dt.datetime.now()
     waktu_sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M")
     waktu_cek = dt.datetime.now()
@@ -1859,10 +1880,10 @@ def cek_parkir_tersedia_jukir():
     print ("")
     print ("KETERSEDIAAN PARKIR".center(110))
     garis("═",b=110)
-    penampil_slot_parkir_mobil()
+    penampil_slot_parkir_motor()
     garis("═",b=110)
     print ("""
-        1. LIHAT KETERSEDIAAN PARKIR MOTOR
+        1. LIHAT KETERSEDIAAN PARKIR MOBIL
         2. KEMBALI KE MENU
 """)
     garis("═",b=110)
@@ -1878,7 +1899,7 @@ def cek_parkir_tersedia_jukir():
                 print ("")
                 print ("KETERSEDIAAN PARKIR".center(110))
                 garis("═",b=110)
-                penampil_slot_parkir_motor()
+                penampil_slot_parkir_mobil()
                 garis("═",b=110)
                 enter()
                 break
@@ -1895,12 +1916,174 @@ def cek_parkir_tersedia_jukir():
     transisi()
     menu_jukir()
 
+def penampung_booking_parkir_seluruh ():
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    booking_parkir_motor = []
+    booking_parkir_mobil = []
+    for i in user :
+        with open (f"datauser/{i}/booking.csv", mode="r") as file :
+            reader = csv.reader (file)
+            for i in reader:
+                if i == []:
+                    continue
+                elif i[2] == "motor" :
+                    booking_parkir_motor.append(i)
+                elif i[2] == "mobil" :
+                    booking_parkir_mobil.append(i)
+    return booking_parkir_motor, booking_parkir_mobil
+
+def penampil_booking_parkir_motor():
+    booking_parkir_motor, booking_parkir_mobil = penampung_booking_parkir_seluruh()
+    border = ["NO","PEMILIK", "BLOK","JENIS KENDARAAN", "PLAT NOMOR", "JENIS PARKIR", "TANGGAL TERBOOKING"]
+    garis("═",b=121)
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^10}|{border[3]:^19}|{border[4]:^20}|{border[5]:^20}|{border[6]:^20}|")
+    garis("═",b=121)
+    if len (booking_parkir_motor) == 0 :
+        print ("BELUM ADA KENDARAAN YANG TERDAFTAR".center(121))
+        garis("═",b=120)
+    else :
+        for a,i in enumerate(booking_parkir_motor) :
+            print (f"|{a + 1:^4}|{i[0]:^20}|{i[1]:^10}|{i[2]:^19}|{i[3]:^20}|{i[4]:^20}|{i[5]:^20}|")
+            garis("═",b=121)
+
+def penampil_booking_parkir_mobil():
+    booking_parkir_motor, booking_parkir_mobil = penampung_booking_parkir_seluruh()
+    border = ["NO","PEMILIK", "BLOK","JENIS KENDARAAN", "PLAT NOMOR", "JENIS PARKIR", "TANGGAL TERBOOKING"]
+    garis("═",b=121)
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^10}|{border[3]:^19}|{border[4]:^20}|{border[5]:^20}|{border[6]:^20}|")
+    garis("═",b=121)
+    if len (booking_parkir_mobil) == 0 :
+        print ("BELUM ADA KENDARAAN YANG TERDAFTAR".center(121))
+        garis("═",b=120)
+    else :
+        for a,i in enumerate(booking_parkir_mobil) :
+            print (f"|{a + 1:^4}|{i[0]:^20}|{i[1]:^10}|{i[2]:^19}|{i[3]:^20}|{i[4]:^20}|{i[5]:^20}|")
+            garis("═",b=121)
+
 def cek_booking_parkir_jukir():
     clear()
-    cover()
-    enter()
-def cek_kendaraan_terparkir():
-    pass
+    cover(b =121)
+    print ("")
+    print ("CEK BOOKING PARKIR\n".center(121))
+    garis("═",b=121)
+    penampil_booking_parkir_motor()
+    garis("═",b=121)
+    print ("""
+        1. CEK BOOKING PARKIR MOBIL
+        2. KEMBALI KE MENU
+""")
+    garis("═",b=121)
+    while True :
+        try:
+            pilih = int(input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                clear()
+                transisi()
+                clear()
+                cover(b =121)
+                print ("")
+                print ("CEK BOOKING PARKIR\n".center(121))
+                garis("═",b=121)
+                penampil_booking_parkir_mobil()
+                garis("═",b=121)
+                enter()
+                clear()
+                transisi()
+                menu_jukir()
+            elif pilih == 2 :
+                enter()
+                clear()
+                transisi()
+                menu_jukir()
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+
+def penampung_parkir_seluruh ():
+    user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    parkir_mobil = []
+    parkir_motor = []
+    for i in user :
+        with open (f"datauser/{i}/parkir.csv", mode="r") as file :
+            reader = csv.reader (file)
+            for i in reader:
+                if i == []:
+                    continue
+                elif i[2] == "mobil":
+                    parkir_mobil.append(i)
+                elif i[2] == "motor":
+                    parkir_motor.append(i)
+    return parkir_mobil,parkir_motor
+
+def penampil_parkir_mobil_seluruh():
+    parkir_mobil, parkir_motor = penampung_parkir_seluruh()
+    border = ["NO","PEMILIK", "BLOK","JENIS KENDARAAN", "PLAT NOMOR", "JENIS PARKIR", "WAKTU CHECK IN"]
+    garis("═",b=121)
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^10}|{border[3]:^19}|{border[4]:^20}|{border[5]:^20}|{border[6]:^20}|")
+    garis("═",b=121)
+    if len (parkir_mobil) == 0 :
+        print ("BELUM ADA KENDARAAN TERPARKIR".center(121))
+        garis("═",b=120)
+    else :
+        for a,i in enumerate(parkir_mobil) :
+            print (f"|{a + 1:^4}|{i[0]:^20}|{i[1]:^10}|{i[2]:^19}|{i[3]:^20}|{i[4]:^20}|{i[5]:^20}|")
+            garis("═",b=121)
+
+def penampil_parkir_motor_seluruh():
+    parkir_mobil, parkir_motor = penampung_parkir_seluruh()
+    border = ["NO","PEMILIK", "BLOK","JENIS KENDARAAN", "PLAT NOMOR", "JENIS PARKIR", "WAKTU CHECK IN"]
+    garis("═",b=121)
+    print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^10}|{border[3]:^19}|{border[4]:^20}|{border[5]:^20}|{border[6]:^20}|")
+    garis("═",b=121)
+    if len (parkir_motor) == 0 :
+        print ("BELUM ADA KENDARAAN TERPARKIR".center(121))
+        garis("═",b=120)
+    else :
+        for a,i in enumerate(parkir_motor) :
+            print (f"|{a + 1:^4}|{i[0]:^20}|{i[1]:^10}|{i[2]:^19}|{i[3]:^20}|{i[4]:^20}|{i[5]:^20}|")
+            garis("═",b=121)
+
+def cek_kendaraan_terparkir_user():
+    clear()
+    cover(b =121)
+    print ("")
+    print ("CEK KENDARAAN TERPARKIR\n".center(121))
+    garis("═",b=121)
+    penampil_parkir_motor_seluruh()
+    garis("═",b=121)
+    print ("""
+        1. CEK MOBIL TERPARKIR
+        2. KEMBALI KE MENU
+""")
+    garis("═",b=121)
+    while True :
+        try:
+            pilih = int(input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                clear()
+                transisi()
+                clear()
+                cover(b =121)
+                print ("")
+                print ("CEK KENDARAAN TERPARKIR\n".center(121))
+                garis("═",b=121)
+                penampil_parkir_mobil_seluruh()
+                garis("═",b=121)
+                enter()
+                clear()
+                transisi()
+                menu_jukir()
+            elif pilih == 2 :
+                enter()
+                clear()
+                transisi()
+                menu_jukir()
+                break
+            else :
+                raise ValueError ("opsi yang dipilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue   
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ADMIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def menu_admin():
     while True :
@@ -1911,7 +2094,7 @@ def menu_admin():
                                         2. MONITORING USER 
                                         3. MONITORING JURU PARKIR
                                         4. MONITORING KENDARAAN USER
-                                        5. MONITORING BOOKING PARKIR
+                                        5. MONITORING PARKIR
                                         6. MONITORING PENITIPAN BARANG
                                         7. LOG OUT
             
@@ -1946,7 +2129,7 @@ def menu_admin():
                 enter()
                 clear()
                 transisi()
-                monitoring_booking_parkir()
+                monitoring_parkir()
             elif pilih == 6 :
                 enter()
                 clear()
@@ -2793,13 +2976,13 @@ def monitoring_kendaraan_user():
     print ("DAFTAR MOTOR USER\n".center(128))
     penampil_motor_admin()
     print ("")
-    garis ("=", b =128)
+    garis ("═", b =128)
     print ("""
         1. DAFTARKAN KENDARAAN USER
         2. HAPUS KENDARAAN USER
         3. KEMBALI KE MENU ADMIN
     """)
-    garis ("=", b =128)
+    garis ("═", b =128)
     pilih = int (input ("masukkan opsi yang dipilih >> "))
     garis ("=", b =128)
     if pilih == 1 :
@@ -2979,12 +3162,15 @@ def penampung_motor_admin():
         with open (f"datauser/{i}/motor.csv", mode="r") as file :
             reader = csv.reader(file)
             for i in reader:
-                atas_nama.append(i[0])
-                jenis_kendaraan.append(i[1])
-                plat_nomor.append(i[2])
-                tipe_kendaraan.append(i[3])
-                tahun_kendaraan.append(i[4])
-                warna_kendaraan.append(i[5])
+                if i == [] :
+                    continue
+                else :
+                    atas_nama.append(i[0])
+                    jenis_kendaraan.append(i[1])
+                    plat_nomor.append(i[2])
+                    tipe_kendaraan.append(i[3])
+                    tahun_kendaraan.append(i[4])
+                    warna_kendaraan.append(i[5])
     return atas_nama,jenis_kendaraan,plat_nomor,tipe_kendaraan,tahun_kendaraan, warna_kendaraan
 
 def penampil_motor_admin():
@@ -3045,8 +3231,45 @@ def hapus_motor_admin():
     transisi()
     monitoring_kendaraan_user()
 #____________________________________________________________________BOOKING PARKIR USER_________________________________________________________
-def monitoring_booking_parkir():
-    pass
+def monitoring_parkir():
+    clear()
+    cover()
+    print ("")
+    print ("MONITORING PARKIR".center(107))
+    garis("═")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #______________________________________________________________________PENITIPAN BARANG__________________________________________________________
 def penampung_barang_admin():
@@ -3076,9 +3299,13 @@ def penampil_barang_admin():
     garis("═",b=110)
     print (f"|{border[0]:^6}|{border[1]:^30}|{border[2]:^20}|{border[3]:^28}|{border[4]:^20}|")
     garis("═",b=110)
-    for i in range (len(pemilik)):
-        print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
-        garis("=",b=110)
+    if len(pemilik) == 0 :
+        print ("BELUM ADA BARANG DITITIPKAN".center(110))
+        garis("═",b=110)
+    else :
+        for i in range (len(pemilik)):
+            print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
+            garis("═",b=110)
 
 def monitoring_penitipan_barang():
     clear()
@@ -3094,7 +3321,7 @@ def monitoring_penitipan_barang():
             3. RIWAYAT PENITIPAN BARANG
             4. KEMBALI KE MENU ADMIN
     """)
-    garis("=",b=110)
+    garis("═",b=110)
     while True:
         try :
             pilih = int (input ("masukkan opsi yang dipilih >> ")) 
@@ -3154,7 +3381,7 @@ def tambah_penitipan_barang_admin():
         try :
             rak = input ("pilih rak kosong yang tersedia >> ").capitalize()
             for i in range (len(rak_barang[0])):
-                if rak == rak_barang[0][i] and rak_barang[1][i] == "KOSONG":
+                if rak == rak_barang[0][i] and rak_barang[1][i] == "-":
                     index_rak.append(i)
                     a += 1 
                     break
@@ -3215,6 +3442,7 @@ def tandai_barang_terambil_admin():
     cover(b=110)
     rak_barang = penampung_rak()
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
+    penampil_barang_admin()
     while True :
         try :
             nama_user = input ("masukkan nama user yang barangnya ingin diambil >> ").lower()
@@ -3246,7 +3474,7 @@ def tandai_barang_terambil_admin():
     for i in range(len(rak_barang[0])):
         if rak[pilih]==rak_barang[0][i]:
             index_rak.append(i)
-    rak_barang[1][index_rak[0]] = "KOSONG"
+    rak_barang[1][index_rak[0]] = "-"
     clear()
     cover(b=110)
     garis("═",b=110)
@@ -3271,10 +3499,7 @@ def tandai_barang_terambil_admin():
                         writer.writerow([pemilik[i],rak[i],nama_barang[i],tanggal_masuk[i]])
                 with open ("dataadmin/rakpenitipanbarang.csv", mode = "w",newline="\n") as file :
                     writer = csv.writer(file)
-                    writer.writerow(rak_barang[0])
-                with open ("dataadmin/rakpenitipanbarang.csv", mode = "a", newline="\n") as file :
-                    writer = csv.writer(file)
-                    writer.writerow(rak_barang[1])
+                    writer.writerows(rak_barang)
                 termcolor.cprint("barang berhasil ditambahkan","green")
                 enter()
                 clear()
@@ -3337,11 +3562,9 @@ def riwayat_penitipan_barang_admin():
 
 if __name__ == "__main__":
     # login_user()
-    halaman_awal()
-    # penampung_diparkirkan()
-    # parkir_user()
-#    login_jukir()
-    # kehadiran_kontribusi_jukir()
-    # kehadiran_jukir()
-    # cek_absensi_kontribusi_jukir()
-    # riwayat_kehadiran_jukir()
+    # login_jukir()
+    monitoring_user()
+    # penampil_booking_parkir_seluruh()
+    # cek_booking_parkir_jukir()
+    # penampil_parkir_seluruh()
+    # cek_kendaraan_terparkir_user()
