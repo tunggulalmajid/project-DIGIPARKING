@@ -3235,10 +3235,221 @@ def monitoring_parkir():
     clear()
     cover()
     print ("")
-    print ("MONITORING PARKIR".center(107))
+    print ("MONITORING PARKIR\n".center(107))
     garis("═")
+    print ("""
+        1. KONFIRMASI CHECKIN DAN CHECKOUT
+        2. HAPUS BOOKING USER 
+        3. KETERSEDIAAN PARKIR
+        4. KENDARAAN TERPARKIR
+        5. KEMBALI KE MENU 
+    """)
+    garis("═")
+    while True :
+        try :
+            pilih = int(input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                enter()
+                clear()
+                transisi()
+                konfirmasi_checkin_checkout()
+                break
+            elif pilih == 2 :
+                enter()
+                clear()
+                transisi()
+                hapus_booking_admin()
+                break
+            elif pilih == 3 :
+                enter()
+                clear()
+                transisi()
+                ketersediaan_parkir_admin()
+                break
+            elif pilih == 4 :
+                enter()
+                clear()
+                transisi()
+                Kendaraan_terparkir_admin()
+                break
+            elif pilih == 5 :
+                enter()
+                clear()
+                transisi()
+                menu_admin()
+                break
+            else :
+                raise ValueError ("opsi yang dipilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+
+def konfirmasi_checkin_checkout():
+    pass
+def hapus_booking_admin():
+    pass
+def ketersediaan_parkir_admin():
+    clear()
+    cover(b=110)
+    print ("")
+    print ("KETERSEDIAAN PARKIR".center(110))
+    garis("═",b=110)
+    print ("""
+        1. LIHAT KETERSEDIAAN PARKIR MOTOR
+        2. LIHAT KETERSEDIAAN PARKIR MOBIL
+        3. KEMBALI KE MENU
+""")
+    garis("═",b=110)
+    while True :
+        try:
+            pilih = int(input("masukkan opsi yang dipilih >>"))
+            if pilih == 1 :
+                enter()
+                slot_parkir = penampung_slot_parkir_motor()
+                jenis_kendaraan = "motor"
+                penampil_slot_parkir_motor()
+                garis("═",b=110)
+                break
+            elif pilih == 2 :
+                enter()
+                slot_parkir = penampung_slot_parkir_mobil()
+                jenis_kendaraan = "mobil"
+                penampil_slot_parkir_mobil()
+                garis("═",b=110)
+                break
+            elif pilih == 3 :
+                clear()
+                transisi()
+                menu_admin()
+            else : 
+                raise ValueError ("opsi yang anda pilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    print ("""
+        1. UPDATE SLOT PARKIR 
+        2. KEMBALI KE MENU
+""")
+    garis("═",b=110)
+    ulang = 0
+    while True :
+        try:
+            indikator_1 = 0
+            pilih = int(input("masukkan opsi yang dipilih >>"))
+            if pilih == 1 :
+                while True :
+                    try :
+                        indikator_2 = 0
+                        slot = input ("masukkan slot parkir yang ingin di ganti >> ").capitalize()
+                        for i in range (len(slot_parkir[0])) :
+                            if slot == slot_parkir[0][i] :
+                                garis("═",b=110)
+                                print ("""
+        1. -
+        2. BOOKED 
+        3. TERISI 
+                                """)
+                                garis("═",b=110)
+                                while True :
+                                    try:
+                                        pilih = int(input("masukkan opsi yang dipilih >>"))
+                                        if pilih == 1 :
+                                            pengganti = "-"
+                                            break
+                                        elif pilih == 2 :
+                                            pengganti = "BOOKED"
+                                            break
+                                        elif pilih == 3 :
+                                            pengganti = "TERISI"
+                                            break
+                                        else :
+                                            raise ValueError ("opsi yang anda pilih tidak tersedia")
+                                    except ValueError as error :
+                                        termcolor.cprint(error,"red")
+                                        enter()
+                                        continue
+                                slot_parkir[1][i] = pengganti
+                                indikator_2 += 1
+                                with open(f"dataadmin/slotparkir{jenis_kendaraan}.csv", mode="w",newline="\n") as file :
+                                    writer = csv.writer(file)
+                                    writer.writerows(slot_parkir)
+                                break
+                            else : 
+                                continue
+                        if indikator_2 == 1 :
+                            indikator_1 += 1
+                            break
+                        if indikator_2 == 0 :
+                            raise ValueError ("slot yang anda masukkan tidak tersedia")
+                    except ValueError as error :
+                        termcolor.cprint(error,"red")
+                        enter()
+                        continue
+            elif pilih == 2 :
+                break
+            else : 
+                raise ValueError ("opsi yang anda pilih tidak tersedia")
+
+            if indikator_1 == 1 :
+                termcolor.cprint("slot parkir berhasil diubah","green")
+                enter()
+                clear()
+                transisi()
+                ketersediaan_parkir_admin()
+                break
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
 
 
+
+  
+
+def Kendaraan_terparkir_admin():
+    clear()
+    cover(b =121)
+    print ("")
+    print ("KENDARAAN TERPARKIR\n".center(121))
+    garis("═",b=121)
+    penampil_parkir_motor_seluruh()
+    garis("═",b=121)
+    print ("""
+        1. CEK MOBIL TERPARKIR
+        2. KEMBALI KE MENU
+""")
+    garis("═",b=121)
+    while True :
+        try:
+            pilih = int(input("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                clear()
+                transisi()
+                clear()
+                cover(b =121)
+                print ("")
+                print ("KENDARAAN TERPARKIR\n".center(121))
+                garis("═",b=121)
+                penampil_parkir_mobil_seluruh()
+                garis("═",b=121)
+                enter()
+                clear()
+                transisi()
+                menu_admin()
+            elif pilih == 2 :
+                enter()
+                clear()
+                transisi()
+                menu_admin()
+                break
+            else :
+                raise ValueError ("opsi yang dipilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue  
 
 
 
@@ -3562,8 +3773,9 @@ def riwayat_penitipan_barang_admin():
 
 if __name__ == "__main__":
     # login_user()
+    # halaman_awal()
     # login_jukir()
-    monitoring_user()
+    monitoring_parkir()
     # penampil_booking_parkir_seluruh()
     # cek_booking_parkir_jukir()
     # penampil_parkir_seluruh()
