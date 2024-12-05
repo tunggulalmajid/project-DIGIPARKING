@@ -1240,6 +1240,7 @@ def checkin_parkir_user():
 def checkout_parkir_user ():
     clear()
     cover(b = 121)
+    harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian = penampung_harga_parkir()
     diparkjirkan_jukir_1,diparkjirkan_jukir_2 = penampung_diparkirkan()
     kendaraan_terparkir = penampung_kendaraan_terparkir_user()
     waktu_sekarang = dt.datetime.now()
@@ -1271,13 +1272,13 @@ def checkout_parkir_user ():
         if kendaraan_terparkir[pilih_checkout][2] == "mobil" :
             diparkjirkan_jukir_1[0] += 1
             slot_parkir = penampung_slot_parkir_mobil()
-            harga_jam = 5000
-            harga_harian = 20000
+            harga_jam = harga_parkir_mobil_5_jam
+            harga_harian = harga_parkir_mobil_harian
         elif kendaraan_terparkir[pilih_checkout][2] == "motor" :
             diparkjirkan_jukir_2[0] += 1
             slot_parkir = penampung_slot_parkir_motor()
-            harga_jam = 2000
-            harga_harian = 10000
+            harga_jam = harga_parkir_motor_5_jam
+            harga_harian = harga_parkir_motor_harian
         for i in range (len (slot_parkir[0])):
             if kendaraan_terparkir[pilih_checkout][1] == slot_parkir[0][i] :
                 slot_parkir[1][i] = "-"
@@ -2175,7 +2176,8 @@ def monitoring_peraturan():
     1. TAMBAH PERATURAN
     2. UPDATE PERATURAN
     3. HAPUS PERATURAN
-    4. KEMBALI KE MENU ADMIN
+    4. ATUR TARIF PARKIR 
+    5. KEMBALI KE MENU ADMIN
     """)
     garis("═")
     while True :
@@ -2203,6 +2205,11 @@ def monitoring_peraturan():
                 enter()
                 clear()
                 transisi()
+                atur_harga_parkir()
+            elif pilih == 5 :
+                enter()
+                clear()
+                transisi()
                 menu_admin()
             else :
                 raise ValueError ("opsi tidak tersedia")
@@ -2225,8 +2232,17 @@ def penampung_peraturan():
 
 def penampil_peraturan():
     garis("═")
+    harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian = penampung_harga_parkir()
     isi = penampung_peraturan()
+    print ("TARIF PARKIR :")
+    print (f"""
+         >. MOTOR KURANG DARI 5 JAM  : Rp.{harga_parkir_motor_5_jam:,}
+         >. MOBIL KURANG DARI 5 JAM  : Rp.{harga_parkir_mobil_5_jam:,}
+         >. MOTOR HARIAN             : Rp.{harga_parkir_motor_harian:,}
+         >. MOBIL HARIAN             : Rp.{harga_parkir_mobil_harian:,}
+""")
     print ("KETENTUAN DIGIPARKING :")
+    print ("")
     for i in range(len(isi)) :
         print (f"\t >. {isi[i]}")
     garis("═")
@@ -2304,7 +2320,6 @@ def update_peraturan():
     transisi()
     monitoring_peraturan()
 
-
 def hapus_peraturan():
     clear()
     cover()
@@ -2338,14 +2353,14 @@ def hapus_peraturan():
     garis("═")
     while True:
         try :
-            yakin = input ("apakah yakin untuk menghapus peraturan ini (y/n)").lower()
+            yakin = input ("apakah yakin untuk menghapus peraturan ini (y/n) >> ").lower()
             if yakin == "y" :
                 isi.pop(pilih)
                 with open (f"dataadmin/ketentuan.csv", mode="w", newline="\n") as file:
                     writer = csv.writer(file)
                     for i in range (len(isi)):
                         writer.writerow([isi[i]])
-                termcolor.cprint("peraturan berhasil di update", "green")
+                termcolor.cprint("peraturan berhasil di hapus", "green")
                 enter()
                 clear()
                 transisi()
@@ -2363,6 +2378,66 @@ def hapus_peraturan():
             termcolor.cprint(error, "red")
             enter()
             continue
+
+def atur_harga_parkir():
+    clear()
+    cover()
+    print ("")
+    print("ATUR HARGA PARKIR\n".center(107))
+    garis("═")
+    with open ("dataadmin/harga_parkir.csv", mode="w", newline="\n") as file:
+        writer = csv.writer(file)
+        while True :
+            try :
+                harga_parkir_motor_5_jam = int (input("masukkan harga parkir motor dibawah 5 jam >> "))
+                break
+            except ValueError:
+                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                enter()
+                continue
+        while True :
+            try :
+                harga_parkir_motor_harian = int (input("masukkan harga parkir motor harian >> "))
+                break
+            except ValueError:
+                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                enter()
+                continue
+
+        while True :
+            try :
+                harga_parkir_mobil_5_jam = int (input("masukkan harga parkir mobil dibawah 5 jam >> "))
+                break            
+            except ValueError:
+                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                enter()
+                continue
+            
+        while True :
+            try :
+                harga_parkir_mobil_harian = int (input("masukkan harga parkir mobil harian >> "))
+                break
+            except ValueError:
+                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                enter()
+                continue
+        writer.writerow([harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian])
+    garis("═")
+    termcolor.cprint("harga parkir berhasil di inputkan", "green")
+    enter()
+    clear()
+    transisi()
+    monitoring_peraturan()
+
+def penampung_harga_parkir():
+    with open ("dataadmin/harga_parkir.csv", mode="r") as file:
+        reader = csv.reader(file)
+        for i in reader:
+            harga_parkir_motor_5_jam = int(i[0])
+            harga_parkir_motor_harian = int(i[1])
+            harga_parkir_mobil_5_jam = int(i[2])
+            harga_parkir_mobil_harian = int(i[3])
+    return harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian
 
 #______________________________________________________________________MONITORING USER_______________________________________________________________
 def penampil_user():
@@ -4215,7 +4290,7 @@ if __name__ == "__main__":
     # konfirmasi_checkin()
     # konfirmasi_checkout()
     # halaman_awal()
-    # menu_admin()
-    laporan_digiparking()
+    menu_admin()
+    # laporan_digiparking()
     # penampil_riwayat_admin()
     # penampung_konfirmasi_checkout()
