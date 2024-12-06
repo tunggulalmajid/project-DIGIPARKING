@@ -100,7 +100,7 @@ def halaman_awal ():
                 exit()
                 break
             else : 
-                print ("Opsi yang anda pilih tidak tersedia") 
+                raise ValueError ("Opsi yang anda pilih tidak tersedia") 
         except ValueError : 
             termcolor.cprint ("masukkan input dalam bentuk angka", "red") 
             enter() 
@@ -124,7 +124,6 @@ def penampung_user ():
             list_password.append (i[5])
     return user,nik,tanggal_lahir,nomor_hp,list_username,list_password   
 
-
 def registrasi (): 
     clear()
     cover() 
@@ -147,19 +146,53 @@ def registrasi ():
                 termcolor.cprint (error, "red")
                 enter()
                 continue
-        nik = input ("masukkan NIK anda >>")
-        tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001)>>") 
+        while True : 
+            try : 
+                nik = int(input ("masukkan NIK anda >>"))
+                nik = str(nik)
+                if len (nik) < 6 or len (nik) > 10  :
+                    raise ValueError ("nik harus lebih dari sama dengan 4 karakter")
+                else :
+                    break
+            except ValueError as erorr:  
+                termcolor.cprint (erorr, "red")
+                enter()
+                continue 
+        while True : 
+            try : 
+                tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001)>>")
+                tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
+                break
+            except ValueError as erorr:  
+                termcolor.cprint (erorr, "red")
+                enter()
+                continue 
 
-        nomorhp =  input ("Masukkan nomor HP >> ") 
+        while True : 
+            try : 
+                nomorhp =  int(input ("Masukkan nomor HP (08123456789) >> "))
+                nomor_hp = str(nomor_hp)
+                if len(nomor_hp) > 10 or len(nomor_hp) <12 :
+                    raise ValueError ("nomor HP minimal 11 karakter ") 
+                else :
+                    break 
+            except ValueError as erorr:  
+                termcolor.cprint (erorr, "red")
+                enter()
+                continue 
         while True : 
             try : 
                 username = input ("buat username baru >> ")
-                if username in list_username: 
+                if len (username) < 4 :
+                    raise ValueError ("username harus lebih dari sama dengan 4 karakter")
+                elif username in list_username: 
                     raise ValueError ("Username sudah digunakan") 
                 else : 
                     break 
             except ValueError as erorr:  
-                termcolor.cprint (erorr, "red") 
+                termcolor.cprint (erorr, "red")
+                enter()
+                continue 
         while True : 
             try : 
                 password = input ("buat password baru >> ")
@@ -169,7 +202,8 @@ def registrasi ():
                     break 
             except ValueError as error: 
                 termcolor.cprint (error, "red") 
-
+                enter()
+                continue
         while True : 
             try : 
                 password2 = input ("konfirmasi password anda >> ") 
@@ -179,6 +213,8 @@ def registrasi ():
                     break 
             except ValueError as error: 
                 termcolor.cprint (error, "red") 
+                enter()
+                continue
         garis("═") 
         with open ("dataadmin/datauser.csv", mode = "a", newline = "\n") as file : 
             border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
@@ -459,44 +495,52 @@ def daftarakan_kendaraan():
     print ("MOTOR TERDAFTAR\n\n".center(128))
     penampil_motor()
     print ("")
-    garis("=", b =128)
+    garis("═", b =128)
     print ("""
         1. TAMBAH KENDARAAN
         2. HAPUS KENDARAAN
         3. KEMBALI KE MENU  
 """)
     
-    garis("=", b =128)
-    pilih = int (input("\tsilahkan masukkan pilihan >> : "))
-    if pilih == 1 :
-        enter(a="\t")
-        clear()
-        transisi()
-        tambah_kendaraan()
-    elif pilih == 2 :
-        enter(a="\t")
-        garis("=", b =128)
-        print ("""
+    garis("═", b =128)
+    while True :
+        try :
+            pilih = int (input("silahkan masukkan pilihan >> : "))
+            if pilih == 1 :
+                enter()
+                clear()
+                transisi()
+                tambah_kendaraan()
+            elif pilih == 2 :
+                enter()
+                garis("═", b =128)
+                print ("""
         1. HAPUS MOBIL
         2. HAPUS MOTOR
 """)
-        garis("=", b =128)
-        mana = int(input ("\thapus yang mana 1/2 >> "))
-        if mana == 1:
-            enter(a="\t")
-            clear()
-            transisi()
-            hapus_mobil()
-        elif mana == 2 :
-            enter(a="\t")
-            clear()
-            transisi()
-            hapus_motor()
-    elif pilih == 3 :
-        enter(a="\t")
-        clear()
-        transisi()
-        menu_user()
+                garis("═", b =128)
+                mana = int(input ("hapus yang mana 1/2 >> "))
+                if mana == 1:
+                    enter()
+                    clear()
+                    transisi()
+                    hapus_mobil()
+                elif mana == 2 :
+                    enter()
+                    clear()
+                    transisi()
+                    hapus_motor()
+            elif pilih == 3 :
+                enter()
+                clear()
+                transisi()
+                menu_user()
+            else :
+                raise ValueError("opsi tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
 
 def tambah_kendaraan():
     clear()
@@ -504,21 +548,77 @@ def tambah_kendaraan():
     print ("\n")
     print ("TAMBAH KENDARAAN\n\n".center(107))
     garis("═")
+    print ("""
+    1. TAMBAH MOBIL
+    2. TAMBAH MOTOR
+    3. KEMBALI 
+""")
+    garis("═")
     while True :
         try :
-            jenis_kendaraan = input("masukkan jenis kendaraan (mobil/motor) >> ").lower()
-            if jenis_kendaraan != "mobil" and jenis_kendaraan != "motor":
-                raise ValueError ("jenis kendaraan tidak valid")
-            else : 
+            pilih = int(input ("masukkan opsi yang dipilih >> "))
+            if pilih == 1 :
+                jenis_kendaraan = "mobil"
+                break
+            elif pilih == 2 :
+                jenis_kendaraan = "motor"
+                break
+            elif pilih == 3 :
+                enter()
+                clear()
+                transisi()
+                daftarakan_kendaraan()
+                break
+            else :
+                raise ValueError("opsi yang dipilih tidak tersedia")
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+    while True :
+        try:
+            plat_nomor = input ("masukkan plat nomor kendaraan (P 1234 VV) >> ").upper()
+            if len(plat_nomor) < 7:
+                raise ValueError ("plat nomor tidak valid")
+            else :
                 break
         except ValueError as error :
             termcolor.cprint(error, "red")
             enter()
             continue
-    plat_nomor = input ("masukkan plat nomor kendaraan (P 1234 VV) >> ")
-    tipe_kendaraan = input ("masukkan tipe kendaraan (Toyota Avanza / Honda Vario) >> ")
-    tahun_kendaraan = input ("masukkan tahun kendaraan (2020) >> ")
-    warna_kendaraan = input ("masukkan warna kendaraan (merah/abu-abu) >> ")
+    while True :
+        try:
+            tipe_kendaraan = input ("masukkan tipe kendaraan (Toyota Avanza / Honda Vario) >> ")
+            if len (tipe_kendaraan) < 4 :
+                raise ValueError ("tipe kendaraan tidak valid")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+    while True :
+        try:
+            tahun_kendaraan = int(input ("masukkan tahun kendaraan (2020) >> "))
+            if tahun_kendaraan > 2024 or tahun_kendaraan <= 1980 :
+                raise ValueError ("tahun kendaraan tidak valid")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
+    while True :
+        try:
+            warna_kendaraan = input ("masukkan warna kendaraan (merah/abu-abu) >> ")
+            if len(warna_kendaraan) < 3:
+                raise ValueError ("warna kendaraan tidak valid")
+            else:
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
     garis("═")
     with open (f"datauser/{nama_profil[0]}/{jenis_kendaraan}.csv", mode="a", newline="\n") as file :
         writer = csv.writer(file)
@@ -537,7 +637,6 @@ def penampung_mobil():
     tahun_kendaraan = []
     warna_kendaraan = []
     with open (f"datauser/{nama_profil[0]}/mobil.csv", mode="r") as file :
-    # with open (f"datauser/ahmad/mobil.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader:
             if i == []:
@@ -573,41 +672,48 @@ def hapus_mobil():
     print("")
     print("HAPUS MOBIL\n".center(128))
     penampil_mobil()
-    garis("=",b=128)
-    pilih = (int(input("Masukkan nomor mobil yang ingin dihapus : ")) - 1)
-    enter()
-    clear()
-    cover(b=128)
-    print("")
-    print("HAPUS MOBIL\n".center(128))
-    border = ["NO","NAMA PEMILIK","JENIS KENDARAAN","PLAT NOMOR","TIPE KENDARAAN","TAHUN KENDARAAN","WARNA KENDARAAN"]
     garis("═",b=128)
-    print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
-    garis("═",b=128)
-    print (f"|{pilih + 1:^3} |{atas_nama[pilih]:^25}|{jenis_kendaraan[pilih]:^17}|{plat_nomor[pilih]:^15}|{tipe_kendaraan[pilih]:^25}|{tahun_kendaraan[pilih]:^17}|{warna_kendaraan[pilih]:^17}|")
-    garis("═",b=128)
-    yakin = input ("apkah yakin ingin menghapus data ini [y/n] >> ").lower()
-    if yakin == "y":
-        atas_nama.pop(pilih)
-        jenis_kendaraan.pop(pilih)
-        plat_nomor.pop(pilih)
-        tipe_kendaraan.pop(pilih)
-        tahun_kendaraan.pop(pilih)
-        warna_kendaraan.pop(pilih)
-    elif yakin == "n":
+    if len (atas_nama) == 0:
+        termcolor.cprint("kendaraan belum tersedia","red")
         enter()
         clear()
         transisi()
         daftarakan_kendaraan()
-    with open (f"datauser/{nama_profil[0]}/mobil.csv", mode = "w", newline = "\n") as file:
-        writer = csv.writer(file)
-        for i in range (len(atas_nama)):
-            writer.writerow ([atas_nama[i], jenis_kendaraan[i], plat_nomor[i],tipe_kendaraan[i],tahun_kendaraan[i],warna_kendaraan[i]])
-    termcolor.cprint("Data berhasil dihapus", "green")
-    enter()
-    clear()
-    transisi()
-    daftarakan_kendaraan()
+    else :
+        pilih = (int(input("Masukkan nomor mobil yang ingin dihapus : ")) - 1)
+        enter()
+        clear()
+        cover(b=128)
+        print("")
+        print("HAPUS MOBIL\n".center(128))
+        border = ["NO","NAMA PEMILIK","JENIS KENDARAAN","PLAT NOMOR","TIPE KENDARAAN","TAHUN KENDARAAN","WARNA KENDARAAN"]
+        garis("═",b=128)
+        print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
+        garis("═",b=128)
+        print (f"|{pilih + 1:^3} |{atas_nama[pilih]:^25}|{jenis_kendaraan[pilih]:^17}|{plat_nomor[pilih]:^15}|{tipe_kendaraan[pilih]:^25}|{tahun_kendaraan[pilih]:^17}|{warna_kendaraan[pilih]:^17}|")
+        garis("═",b=128)
+        yakin = input ("apkah yakin ingin menghapus data ini [y/n] >> ").lower()
+        if yakin == "y":
+            atas_nama.pop(pilih)
+            jenis_kendaraan.pop(pilih)
+            plat_nomor.pop(pilih)
+            tipe_kendaraan.pop(pilih)
+            tahun_kendaraan.pop(pilih)
+            warna_kendaraan.pop(pilih)
+        elif yakin == "n":
+            enter()
+            clear()
+            transisi()
+            daftarakan_kendaraan()
+        with open (f"datauser/{nama_profil[0]}/mobil.csv", mode = "w", newline = "\n") as file:
+            writer = csv.writer(file)
+            for i in range (len(atas_nama)):
+                writer.writerow ([atas_nama[i], jenis_kendaraan[i], plat_nomor[i],tipe_kendaraan[i],tahun_kendaraan[i],warna_kendaraan[i]])
+        termcolor.cprint("Data berhasil dihapus", "green")
+        enter()
+        clear()
+        transisi()
+        daftarakan_kendaraan()
 
 #__________________________________________________MOTOR_____________________________________________________
 def penampung_motor():
@@ -618,7 +724,6 @@ def penampung_motor():
     tahun_kendaraan = []
     warna_kendaraan = []
     with open (f"datauser/{nama_profil[0]}/motor.csv", mode="r") as file :
-    # with open (f"datauser/ahmad/motor.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader:
             if i == []:
@@ -655,40 +760,47 @@ def hapus_motor():
     print("HAPUS MOTOR\n".center(128))
     penampil_motor()
     garis("═",b=128)
-    pilih = (int(input("Masukkan nomor motor yang ingin dihapus : ")) - 1)
-    enter()
-    clear()
-    cover(b=128)
-    print("")
-    print("HAPUS MOTOR\n".center(128))
-    border = ["NO","NAMA PEMILIK","JENIS KENDARAAN","PLAT NOMOR","TIPE KENDARAAN","TAHUN KENDARAAN","WARNA KENDARAAN"]
-    garis("═",b=128)
-    print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
-    garis("═",b=128)
-    print (f"|{pilih + 1:^3} |{atas_nama[pilih]:^25}|{jenis_kendaraan[pilih]:^17}|{plat_nomor[pilih]:^15}|{tipe_kendaraan[pilih]:^25}|{tahun_kendaraan[pilih]:^17}|{warna_kendaraan[pilih]:^17}|")
-    garis("═",b=128)
-    yakin = input ("apkah yakin ingin menghapus data ini [y/n] >> ").lower()
-    if yakin == "y":
-        atas_nama.pop(pilih)
-        jenis_kendaraan.pop(pilih)
-        plat_nomor.pop(pilih)
-        tipe_kendaraan.pop(pilih)
-        tahun_kendaraan.pop(pilih)
-        warna_kendaraan.pop(pilih)
-    elif yakin == "n":
+    if len (atas_nama) == 0:
+        termcolor.cprint("kendaraan belum tersedia","red")
         enter()
         clear()
         transisi()
         daftarakan_kendaraan()
-    with open (f"datauser/{nama_profil[0]}/motor.csv", mode = "w", newline = "\n") as file:
-        writer = csv.writer(file)
-        for i in range (len(atas_nama)):
-            writer.writerow ([atas_nama[i], jenis_kendaraan[i], plat_nomor[i],tipe_kendaraan[i],tahun_kendaraan[i],warna_kendaraan[i]])
-    termcolor.cprint("Data berhasil dihapus", "green")
-    enter()
-    clear()
-    transisi()
-    daftarakan_kendaraan()
+    else :
+        pilih = (int(input("Masukkan nomor motor yang ingin dihapus : ")) - 1)
+        enter()
+        clear()
+        cover(b=128)
+        print("")
+        print("HAPUS MOTOR\n".center(128))
+        border = ["NO","NAMA PEMILIK","JENIS KENDARAAN","PLAT NOMOR","TIPE KENDARAAN","TAHUN KENDARAAN","WARNA KENDARAAN"]
+        garis("═",b=128)
+        print (f"|{border[0]:^4}|{border[1]:^25}|{border[2]:^17}|{border[3]:^15}|{border[4]:^25}|{border[5]:^17}|{border[6]:^17}|")
+        garis("═",b=128)
+        print (f"|{pilih + 1:^3} |{atas_nama[pilih]:^25}|{jenis_kendaraan[pilih]:^17}|{plat_nomor[pilih]:^15}|{tipe_kendaraan[pilih]:^25}|{tahun_kendaraan[pilih]:^17}|{warna_kendaraan[pilih]:^17}|")
+        garis("═",b=128)
+        yakin = input ("apkah yakin ingin menghapus data ini [y/n] >> ").lower()
+        if yakin == "y":
+            atas_nama.pop(pilih)
+            jenis_kendaraan.pop(pilih)
+            plat_nomor.pop(pilih)
+            tipe_kendaraan.pop(pilih)
+            tahun_kendaraan.pop(pilih)
+            warna_kendaraan.pop(pilih)
+        elif yakin == "n":
+            enter()
+            clear()
+            transisi()
+            daftarakan_kendaraan()
+        with open (f"datauser/{nama_profil[0]}/motor.csv", mode = "w", newline = "\n") as file:
+            writer = csv.writer(file)
+            for i in range (len(atas_nama)):
+                writer.writerow ([atas_nama[i], jenis_kendaraan[i], plat_nomor[i],tipe_kendaraan[i],tahun_kendaraan[i],warna_kendaraan[i]])
+        termcolor.cprint("Data berhasil dihapus", "green")
+        enter()
+        clear()
+        transisi()
+        daftarakan_kendaraan()
 
 
 #___________________________________________________PARKIR__________________________________________________________
@@ -905,6 +1017,8 @@ def parkir_instan_user ():
         if len(atas_nama) == 0 :
             print ("silahkan daftarkan kendaraan terlebih dahulu ")
             enter()
+            clear()
+            transisi()
             daftarakan_kendaraan()
     elif jenis_kendaraan_parkir == "motor" :
         atas_nama,jenis_kendaraan,plat_nomor,tipe_kendaraan,tahun_kendaraan,warna_kendaraan = penampung_motor()
@@ -912,8 +1026,20 @@ def parkir_instan_user ():
         if len(atas_nama) == 0 :
             print ("silahkan daftarkan kendaraan terlebih dahulu ")
             enter()
+            clear()
+            transisi()
             daftarakan_kendaraan()
-    pilih_kendaraan = int (input ("pilih kendaraan yang ingin di parkirkan >> ")) - 1 
+    while True :
+        try:
+            pilih_kendaraan = int (input ("pilih kendaraan yang ingin di parkirkan >> ")) - 1
+            if pilih_kendaraan < 0 or pilih_kendaraan >= len(atas_nama):
+                raise ValueError("inputan tidak valid")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
+            continue
     enter()
     clear()
     transisi()
@@ -946,13 +1072,9 @@ def parkir_instan_user ():
             termcolor.cprint(error, "red")
             enter()
             continue
-    # slot_parkir[1][index_slot_parkir[0]] = "TERISI"
     with open (f"dataadmin/slotparkir{jenis_kendaraan_parkir}.csv",mode="w",newline="\n") as file :
         writer = csv.writer(file)
         writer.writerows(slot_parkir)
-    # with open (f"datauser/{nama_profil[0]}/parkir.csv",mode="a",newline="\n") as file :
-    #     writer = csv.writer(file)
-    #     writer.writerow([atas_nama[pilih_kendaraan],slot_parkir[0][index_slot_parkir[0]],jenis_kendaraan[pilih_kendaraan],plat_nomor[pilih_kendaraan],jenis_parkir,waktu_sekarang])
     with open (f"dataadmin/konfirmasicheckin.csv",mode="a",newline="\n") as file :
         writer = csv.writer(file)
         writer.writerow([atas_nama[pilih_kendaraan],slot_parkir[0][index_slot_parkir[0]],jenis_kendaraan[pilih_kendaraan],plat_nomor[pilih_kendaraan],jenis_parkir,waktu_sekarang])
@@ -1051,6 +1173,7 @@ def menu_booking_parkir_user ():
             termcolor.cprint(error,"red")
             enter()
             continue
+
 def booking_parkir_user():
     booking = penampung_booking_user()
     clear()
@@ -1091,6 +1214,8 @@ def booking_parkir_user():
         if len(atas_nama) == 0 :
             print ("silahkan daftarkan kendaraan terlebih dahulu ")
             enter()
+            clear()
+            transisi()
             daftarakan_kendaraan()
     elif jenis_kendaraan_parkir == "motor" :
         atas_nama,jenis_kendaraan,plat_nomor,tipe_kendaraan,tahun_kendaraan,warna_kendaraan = penampung_motor()
@@ -1098,11 +1223,13 @@ def booking_parkir_user():
         if len(atas_nama) == 0 :
             print ("silahkan daftarkan kendaraan terlebih dahulu ")
             enter()
+            clear()
+            transisi()
             daftarakan_kendaraan()
     while True :
         try :
             pilih_kendaraan = int (input ("pilih kendaraan yang ingin di parkirkan >> ")) - 1
-            if pilih_kendaraan  < 0 or pilih_kendaraan  > len(atas_nama) :
+            if pilih_kendaraan < 0 or pilih_kendaraan >= len(atas_nama) :
                 raise ValueError ("inputan tidak valid, kendaraan tidak tersedia")
             elif pilih_kendaraan  >= 0 and pilih_kendaraan  < len(atas_nama) :
                 a = 0
@@ -1114,7 +1241,15 @@ def booking_parkir_user():
             if a == 0:
                 break
             else :
-                raise ValueError ("kendaraan yang anda pilih sudah terbooking")
+                termcolor.cprint("kendaraan yang anda pilih sudah terbooking", "red")
+                yakin = input ("apakah anda ingin mencari kendaraan lain ? (y/n) >> ").lower()
+                if yakin == "y" :
+                    continue
+                elif yakin == "n" :
+                    clear()
+                    transisi()
+                    menu_booking_parkir_user()
+                    break
         except ValueError as error :
             termcolor.cprint(error, "red")
             enter()
@@ -1198,9 +1333,9 @@ def checkin_parkir_user():
         while True :
             try :
                 pilih_checkin = int (input ("pilih kendaraan yang ingin di check in kan >> ")) - 1 
-                tanggal_booking = dt.datetime.strptime(booking[pilih_checkin][5],"%d-%m-%Y")
-                if pilih_checkin < 0 or pilih_checkin > len(booking) :
+                if pilih_checkin < 0 or pilih_checkin >= len(booking) :
                     raise ValueError ("inputan tidak valid, pilihan tidak tersedia")
+                tanggal_booking = dt.datetime.strptime(booking[pilih_checkin][5],"%d-%m-%Y")
                 if tanggal_booking == waktu_sekarang:
                     break
                 elif tanggal_booking < waktu_sekarang :
@@ -1209,11 +1344,17 @@ def checkin_parkir_user():
                     raise ValueError ("tidak bisa melakukan check in, tanggal booking belum tiba")
             except ValueError as error :
                 termcolor.cprint(error, "red")
+                yakin = input ("apakah ingin mencoba lagi? (y/n) >> ").lower()
                 enter()
-                continue
+                if yakin == "y" :
+                    continue
+                elif yakin == "n" :
+                    clear()
+                    transisi()
+                    menu_booking_parkir_user()
         if booking[pilih_checkin][2] == "mobil" :
             slot_parkir = penampung_slot_parkir_mobil()
-        if booking[pilih_checkin][2] == "motor" :
+        elif booking[pilih_checkin][2] == "motor" :
             slot_parkir = penampung_slot_parkir_motor()
         for i in range (len (booking)) :
             if booking[pilih_checkin][1] == slot_parkir[0][i]:
@@ -1221,9 +1362,6 @@ def checkin_parkir_user():
         with open (f"dataadmin/slotparkir{booking[pilih_checkin][2]}.csv",mode="w",newline="\n") as file :
             writer = csv.writer(file)
             writer.writerows(slot_parkir)
-        # with open (f"datauser/{nama_profil[0]}/parkir.csv",mode="a",newline="\n") as file :
-        #     writer = csv.writer(file)
-        #     writer.writerow([booking[pilih_checkin][0],booking[pilih_checkin][1],booking[pilih_checkin][2],booking[pilih_checkin][3],booking[pilih_checkin][4],waktu_checkin])
         with open (f"dataadmin/konfirmasicheckin.csv",mode="a",newline="\n") as file :
             writer = csv.writer(file)
             writer.writerow([booking[pilih_checkin][0],booking[pilih_checkin][1],booking[pilih_checkin][2],booking[pilih_checkin][3],booking[pilih_checkin][4],waktu_checkin])
@@ -1334,12 +1472,6 @@ def checkout_parkir_user ():
         with open(f"dataadmin/slotparkir{kendaraan_terparkir[pilih_checkout][2]}.csv", mode="w",newline="\n") as file :
             writer = csv.writer(file)
             writer.writerows(slot_parkir)
-        # with open ("dataadmin/riwayat_parkir_keseluruhan.csv", mode="a", newline="\n") as file:
-        #     writer = csv.writer(file)
-        #     writer.writerow(kendaraan_terparkir[pilih_checkout])
-        # with open (f"datauser/{nama_profil[0]}/riwayat_parkir_user.csv", mode="a", newline="\n") as file:
-        #     writer = csv.writer(file)
-        #     writer.writerow(kendaraan_terparkir[pilih_checkout])
         with open (f"dataadmin/konfirmasicheckout.csv", mode="a", newline="\n") as file:
             writer = csv.writer(file)
             writer.writerow(kendaraan_terparkir[pilih_checkout])
@@ -1358,15 +1490,15 @@ def penampung_riwayat_parkir_user ():
     with open (f"datauser/{nama_profil[0]}/riwayat_parkir_user.csv", mode="r") as file :
         reader = csv.reader(file)
         for i in reader:
-            riwayat.append(i)
+            if i == []:
+                continue
+            else :
+                riwayat.append(i)
     return riwayat
 
 def penampil_riwayat_parkir_user():
     riwayat = penampung_riwayat_parkir_user()
     total_harga =[]
-    for i in riwayat:
-        total = f"{int(i[7]):,}"
-        total_harga.append(total)
     border = ["NO", "PEMILIK", "BLOK", "JENIS KENDARAAN", "PLAT NOMOR", "JENIS PARKIR", "WAKTU CHECK IN", "WAKTU CHECK OUT", "TOTAL TAGIHAN"]
     garis("═",b=157)
     print (f"|{border[0]:^4}|{border[1]:^20}|{border[2]:^8}|{border[3]:^20}|{border[4]:^15}|{border[5]:^20}|{border[6]:^20}|{border[7]:^20}|{border[8]:^20}|")
@@ -1375,6 +1507,9 @@ def penampil_riwayat_parkir_user():
         print ("BELUM ADA RIWAYAT PARKIR".center(157))
         garis("═",b=157)
     else :
+        for i in riwayat:
+            total = f"{int(i[7]):,}"
+            total_harga.append(total)
         for a,i in enumerate(riwayat):
             print (f"|{a+1:^4}|{i[0]:^20}|{i[1]:^8}|{i[2]:^20}|{i[3]:^15}|{i[4]:^20}|{i[5]:^20}|{i[6]:^20}|{"Rp."+total_harga[a]:^20}|")
             garis("═",b=157)
@@ -1513,7 +1648,7 @@ def penampil_barang():
     else:
         for i in range (len(pemilik)):
             print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|")
-            garis("=",b=110)
+            garis("═",b=110)
     
 def titipkan_barang_user():
     rak_barang = penampung_rak()
@@ -1591,7 +1726,17 @@ def ambil_barang_user():
         clear()
         penitipan_barang_user()
     else :
-        pilih = int (input("masukkan nomor barang yang ingin di ambil >> ")) - 1 
+        while True :
+            try :
+                pilih = int (input("masukkan nomor barang yang ingin di ambil >> ")) - 1 
+                if pilih < 0 or pilih >= len(pemilik) :
+                    raise ValueError ("barang tidak tersedia")
+                else :
+                    break
+            except ValueError as error :
+                termcolor.cprint(error,"red")
+                enter()
+                continue
         index_rak = []
         for i in range(len(rak_barang[0])):
             if rak[pilih]==rak_barang[0][i]:
@@ -1679,12 +1824,12 @@ def riwayat_penitipan_user():
     if len(pemilik) == 0 :
         print ("")
         print ("BELUM ADA RIWAYAT PENITIPAN BARANG\n".center(131))
-        garis("═")
+        garis("═",b=131)
     else :
         for i in range (len (pemilik)):
             print (f"|{i+1:^6}|{pemilik[i]:^30}|{rak[i]:^20}|{nama_barang[i]:^28}|{tanggal_masuk[i]:^20}|{tanggal_keluar[i]:^20}|")
             garis("=",b=131)
-    garis("=",b=131)
+    garis("═",b=131)
     enter()
     clear()
     transisi()
@@ -1808,11 +1953,13 @@ def kehadiran_kontribusi_jukir():
                 clear()
                 transisi()
                 kehadiran_jukir()
+                break
             elif pilih == 2 :
                 enter()
                 clear()
                 transisi()
                 menu_jukir()
+                break
             else :
                 raise ValueError ("opsi yang anda pilih tidak tersedia")
         except ValueError as error :
@@ -2206,11 +2353,13 @@ def monitoring_peraturan():
                 clear()
                 transisi()
                 atur_harga_parkir()
+                break
             elif pilih == 5 :
                 enter()
                 clear()
                 transisi()
                 menu_admin()
+                break
             else :
                 raise ValueError ("opsi tidak tersedia")
         except ValueError as error :
@@ -4290,7 +4439,8 @@ if __name__ == "__main__":
     # konfirmasi_checkin()
     # konfirmasi_checkout()
     # halaman_awal()
-    menu_admin()
+    # menu_admin()
+    halaman_awal()
     # laporan_digiparking()
     # penampil_riwayat_admin()
     # penampung_konfirmasi_checkout()
