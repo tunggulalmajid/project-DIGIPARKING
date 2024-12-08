@@ -2405,8 +2405,8 @@ def tambah_peraturan():
     while True : 
         try:
             isi = input ("Isi Peraturan (tidak boleh lebih dari 90 karakter)>> ")
-            if len(isi) > 90 :
-                raise ValueError ("isi peraturan tidak boleh lebih dari 90 karakter")
+            if len(isi) > 90 or len (isi) < 5 :
+                raise ValueError ("isi peraturan minimal terdiri atas 5 karakter dan tidak boleh lebih dari 90 karakter")
             else :
                 break
         except ValueError as error :
@@ -2440,11 +2440,11 @@ def update_peraturan():
     while True :
         try:
             pilih = int (input ("masukkan peraturan yang ingin di update >> ")) - 1
-            pengganti = input ("masukkan peraturan sebagai pengganti >> ")
             if pilih < 0 or pilih >= len(isi):
                 raise ValueError ("nomor yang anda pilih tidak tersedia")
-            if pengganti == "" or len(pengganti) > 90:
-                raise ValueError ("isi peraturan tidak boleh kosong dan tidak boleh lebih dari 90 karakter")
+            pengganti = input ("masukkan peraturan sebagai pengganti >> ")
+            if len (pengganti) < 5 or len(pengganti) > 90:
+                raise ValueError ("isi peraturan tidak boleh kurang dari 5 karakter dan tidak boleh lebih dari 90 karakter")
             else : 
                 break
         except ValueError as error :
@@ -2539,35 +2539,47 @@ def atur_harga_parkir():
         while True :
             try :
                 harga_parkir_motor_5_jam = int (input("masukkan harga parkir motor dibawah 5 jam >> "))
-                break
-            except ValueError:
-                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                if harga_parkir_motor_5_jam < 1000 :
+                    raise ValueError ("harga tidak boleh kurang dari 1000")
+                else :
+                    break
+            except ValueError as error:
+                termcolor.cprint(error, "red")
                 enter()
                 continue
         while True :
             try :
                 harga_parkir_motor_harian = int (input("masukkan harga parkir motor harian >> "))
-                break
-            except ValueError:
-                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                if harga_parkir_motor_harian < 5000:
+                    raise ValueError ("harga tidak boleh kurang dari 1000")
+                else :
+                    break
+            except ValueError as error:
+                termcolor.cprint(error, "red")
                 enter()
                 continue
 
         while True :
             try :
                 harga_parkir_mobil_5_jam = int (input("masukkan harga parkir mobil dibawah 5 jam >> "))
-                break            
-            except ValueError:
-                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                if harga_parkir_mobil_5_jam < 3000 :
+                    raise ValueError ("harga tidak boleh kurang dari 3000")
+                else :
+                    break            
+            except ValueError as error:
+                termcolor.cprint(error, "red")
                 enter()
                 continue
             
         while True :
             try :
                 harga_parkir_mobil_harian = int (input("masukkan harga parkir mobil harian >> "))
-                break
-            except ValueError:
-                termcolor.cprint("input yang anda masukkan tidak valid", "red")
+                if harga_parkir_mobil_harian < 10000 :
+                    raise ValueError ("harga tidak boleh kurang dari 10000")
+                else :
+                    break
+            except ValueError as error:
+                termcolor.cprint(error, "red")
                 enter()
                 continue
         writer.writerow([harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian])
@@ -2582,10 +2594,17 @@ def penampung_harga_parkir():
     with open ("dataadmin/harga_parkir.csv", mode="r") as file:
         reader = csv.reader(file)
         for i in reader:
-            harga_parkir_motor_5_jam = int(i[0])
-            harga_parkir_motor_harian = int(i[1])
-            harga_parkir_mobil_5_jam = int(i[2])
-            harga_parkir_mobil_harian = int(i[3])
+            if i == []:
+                harga_parkir_motor_5_jam = 0
+                harga_parkir_motor_harian = 0
+                harga_parkir_mobil_5_jam = 0
+                harga_parkir_mobil_harian = 0
+                break
+            else :
+                harga_parkir_motor_5_jam = int(i[0])
+                harga_parkir_motor_harian = int(i[1])
+                harga_parkir_mobil_5_jam = int(i[2])
+                harga_parkir_mobil_harian = int(i[3])
     return harga_parkir_motor_5_jam, harga_parkir_motor_harian,harga_parkir_mobil_5_jam, harga_parkir_mobil_harian
 
 #______________________________________________________________________MONITORING USER_______________________________________________________________
@@ -2652,11 +2671,54 @@ def tambah_user():
     print ("\n")
     print ("TAMBAH USER\n\n".center(107)) 
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
-    garis("═")
-    nama = input ("masukkan nama lengkap User >> ")
-    nik = int (input ("masukkan NIK User >>"))
-    tanggal_lahir = input ("masukkan tanggal lahir User (contoh : 02-02-2001)>>") 
-    nomorhp = int (input ("Masukkan nomor HP User >> ")) 
+    garis("═") 
+    while True :
+        try:
+            nama = input ("masukkan nama lengkap user >> ")
+            if len(nama) < 4 :
+                raise ValueError ("nama minimal terdiri dari 4 karakter")
+            elif nama in user :
+                raise ValueError ("nama yang anda pilih sudah digunakan")
+            else : 
+                break
+        except ValueError as error :
+            termcolor.cprint (error, "red")
+            enter()
+            continue
+    while True : 
+        try : 
+            nik = int(input ("masukkan NIK user >>"))
+            nik = str(nik)
+            if len (nik) < 6 or len (nik) > 10  :
+                raise ValueError ("nik harus lebih dari sama dengan 4 karakter")
+            else :
+                break
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
+    while True : 
+        try : 
+            tanggal_lahir = input ("masukkan tanggal lahir user (contoh : 02-02-2001)>>")
+            tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
+            break
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
+
+    while True : 
+        try : 
+            nomorhp =  int(input ("Masukkan nomor HP user (08123456789) >> "))
+            nomor_hp = str(nomor_hp)
+            if len(nomor_hp) > 10 or len(nomor_hp) <12 :
+                raise ValueError ("nomor HP minimal 11 karakter ") 
+            else :
+                break 
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
     while True : 
         try : 
             username = input ("buat username User >> ")
@@ -2666,6 +2728,7 @@ def tambah_user():
                 break 
         except ValueError as erorr:  
             termcolor.cprint (erorr, "red") 
+
     while True : 
         try : 
             password = input ("buat password User >> ")
@@ -2727,9 +2790,13 @@ def update_user():
         while True :
             try :
                 pilih = (int (input("masukkan nomor user yang ingin diupdate >>")) - 1)
-                break
-            except ValueError :
-                termcolor.cprint("masukkan pilihan berupa angka", "red")
+                if pilih < 0 or pilih >= len(list_username) :
+                    raise ValueError ("inputan tidak valid")
+                else :
+                    break
+            except ValueError as error :
+                termcolor.cprint(error, "red")
+                enter()
         border = ["NO","NAMA", "NIK", "TANGGAL LAHIR", "NOMOR HP", "USERNAME", "PASSWORD"]
         while True :
             clear()
@@ -2795,6 +2862,7 @@ def update_user():
                     raise ValueError("inputan yang anda masukkan tidak valid")
             except ValueError as error :
                 termcolor.cprint(error, "red")
+                enter()
         if indikator == 1 :
             enter()
             clear()
@@ -2814,7 +2882,16 @@ def hapus_user():
     print ("\n")
     print ("HAPUS USER\n\n".center(107))
     penampil_user()
-    pilih = (int (input ("masukkan nomer user yang ingin dihapus >> ")) - 1)
+    while True :
+        try:
+            pilih = (int (input ("masukkan nomer user yang ingin dihapus >> ")) - 1)
+            if pilih < 0 or pilih >= len(user):
+                raise ValueError ("inputan tidak valid")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error, "red")
+            enter()
     clear()
     cover(b=117)
     garis("═",b=117)
@@ -4439,8 +4516,8 @@ if __name__ == "__main__":
     # konfirmasi_checkin()
     # konfirmasi_checkout()
     # halaman_awal()
-    # menu_admin()
-    halaman_awal()
+    menu_admin()
+    # halaman_awal()
     # laporan_digiparking()
     # penampil_riwayat_admin()
     # penampung_konfirmasi_checkout()
