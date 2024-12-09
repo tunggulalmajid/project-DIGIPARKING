@@ -151,7 +151,7 @@ def registrasi ():
                 nik = int(input ("masukkan NIK anda >>"))
                 nik = str(nik)
                 if len (nik) < 6 or len (nik) > 10  :
-                    raise ValueError ("nik harus lebih dari sama dengan 4 karakter")
+                    raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karatkter")
                 else :
                     break
             except ValueError as erorr:  
@@ -162,6 +162,7 @@ def registrasi ():
             try : 
                 tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001)>>")
                 tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
+                tanggal_lahir = tanggal_lahir.strftime("%d-%m-%Y") 
                 break
             except ValueError as erorr:  
                 termcolor.cprint (erorr, "red")
@@ -170,11 +171,15 @@ def registrasi ():
 
         while True : 
             try : 
-                nomorhp =  int(input ("Masukkan nomor HP (08123456789) >> "))
-                nomor_hp = str(nomor_hp)
-                if len(nomor_hp) > 10 or len(nomor_hp) <12 :
-                    raise ValueError ("nomor HP minimal 11 karakter ") 
+                nomorhp =  int(input ("Masukkan nomor HP (8123456789) >> "))
+                nomorhp = str(nomorhp)
+                if len (nomorhp) < 10:
+                    raise ValueError ("nomor HP minimal 10  ") 
+                elif len (nomorhp) > 12:
+                    raise ValueError ("nomor HP minimal 10  ") 
                 else :
+                    nomorhp = "+62" + nomorhp
+                    enter()
                     break 
             except ValueError as erorr:  
                 termcolor.cprint (erorr, "red")
@@ -2690,7 +2695,7 @@ def tambah_user():
             nik = int(input ("masukkan NIK user >>"))
             nik = str(nik)
             if len (nik) < 6 or len (nik) > 10  :
-                raise ValueError ("nik harus lebih dari sama dengan 4 karakter")
+                raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karakter")
             else :
                 break
         except ValueError as erorr:  
@@ -2701,6 +2706,7 @@ def tambah_user():
         try : 
             tanggal_lahir = input ("masukkan tanggal lahir user (contoh : 02-02-2001)>>")
             tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
+            tanggal_lahir = tanggal_lahir.strftime("%d-%m-%Y") 
             break
         except ValueError as erorr:  
             termcolor.cprint (erorr, "red")
@@ -2709,15 +2715,19 @@ def tambah_user():
 
     while True : 
         try : 
-            nomorhp =  int(input ("Masukkan nomor HP user (08123456789) >> "))
-            nomor_hp = str(nomor_hp)
-            if len(nomor_hp) > 10 or len(nomor_hp) <12 :
-                raise ValueError ("nomor HP minimal 11 karakter ") 
+            nomorhp =  int(input ("Masukkan nomor HP (8123456789) >> "))
+            nomorhp = str(nomorhp)
+            if len (nomorhp) < 10:
+                raise ValueError ("nomor HP minimal 10  ") 
+            elif len (nomorhp) > 12:
+                raise ValueError ("nomor HP minimal 10  ") 
             else :
+                nomorhp = "+62" + nomorhp
                 break 
         except ValueError as erorr:  
             termcolor.cprint (erorr, "red")
             enter()
+    
             continue 
     while True : 
         try : 
@@ -2811,27 +2821,85 @@ def update_user():
                 if bagian == "nama":
                     raise ValueError ("nama user tidak boleh diganti")
                 elif bagian == "nik":
-                    pengganti = int(input("masukkan kata sebagai pengganti >> "))
+                    while True :
+                        try :
+                            pengganti = int(input("masukkan kata sebagai pengganti >> "))
+                            pengganti = str(pengganti)
+                            if len (pengganti) < 6 or len (pengganti) > 10  :
+                                raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karatkter")
+                            else :
+                                break
+                        except ValueError as error :
+                            termcolor.cprint(error,"red")
+                            enter()
+                            continue
                     nik[pilih] = pengganti
                     break            
                 elif bagian == "tanggal":
-                    pengganti = input("masukkan kata sebagai pengganti >> ")
+                    while True :
+                        try :
+                            pengganti = input ("masukkan tanggal lahir sebagai pengganti (contoh : 02-02-2001)>>")
+                            pengganti = dt.datetime.strptime(pengganti, "%d-%m-%Y")
+                            pengganti = pengganti.strftime("%d-%m-%Y")
+
+                            break 
+                        except ValueError as error:
+                            termcolor.cprint(error,"red")
+                            enter()
+                            continue
                     tanggal_lahir[pilih] = pengganti
                     break            
                 elif bagian == "nomor":
-                    pengganti = int(input("masukkan kata sebagai pengganti >> "))
-                    tanggal_lahir[pilih] = pengganti
+                    while True :
+                        try :
+                            pengganti = int(input ("Masukkan nomor HP sebagai pengganti (8123456789) >> "))
+                            pengganti = str(pengganti)
+                            if len (pengganti) < 10:
+                                raise ValueError ("nomor HP minimal 10  ") 
+                            elif len (pengganti) > 12:
+                                raise ValueError ("nomor HP minimal 10  ") 
+                            else :
+                                pengganti = "+62" + pengganti
+                                enter()
+                                break
+                        except ValueError as error :
+                            termcolor.cprint(error,"red")
+                            enter()
+                            continue
+                    nomor_hp[pilih] = pengganti
                     break            
                 elif bagian == "username":
-                    pengganti = input("masukkan kata sebagai pengganti >> ")
+                    while True : 
+                        try : 
+                            pengganti = input("masukkan username pengganti pengganti >> ")
+                            if len (pengganti) < 4 :
+                                raise ValueError ("username harus lebih dari sama dengan 4 karakter")
+                            elif pengganti in list_username: 
+                                raise ValueError ("Username sudah digunakan") 
+                            else : 
+                                break 
+                        except ValueError as erorr:  
+                            termcolor.cprint (erorr, "red")
+                            enter()
+                            continue 
                     list_username[pilih] = pengganti
                     break            
                 elif bagian == "password":
-                    pengganti = input("masukkan kata sebagai pengganti >> ")
+                    while True : 
+                        try : 
+                            pengganti = input("masukkan kata sebagai pengganti >> ")
+                            if len(pengganti) < 8 : 
+                                raise ValueError ("Password harus lebih dari 8 karakter dan tidak sama dengan username") 
+                            else : 
+                                break 
+                        except ValueError as error: 
+                            termcolor.cprint (error, "red") 
+                            enter()
+                            continue
                     list_password[pilih] = pengganti
                     break            
                 else :
-                    raise ValueError("bagian yang anda maksid tidak ditemukan")
+                    raise ValueError("bagian yang anda maksud tidak ditemukan")
             except ValueError as error :
                 termcolor.cprint(error, "red")
                 enter()
@@ -2912,7 +2980,6 @@ def hapus_user():
             writer = csv.writer(file)
             for i in range (len(user)):
                 writer.writerow ([user[i], nik[i], tanggal_lahir[i],nomor_hp[i],list_username[i],list_password[i]])
-        
         enter()
         clear()
         monitoring_user()
@@ -3110,7 +3177,6 @@ def update_jukir():
 def penampung_kehadiran_jukir_admin():
     tampungan_kehadiran_jukir_1 = []
     tampungan_kehadiran_jukir_2 = []
-    # username_pasword_jukir_profil =[["jukir1","indo"]]
     nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
     for i in username_jukir:
         with open (f"datajukir/kehadiran{i}.csv", mode="r") as file:
@@ -4509,15 +4575,5 @@ def riwayat_penitipan_barang_admin():
     laporan_digiparking()
 
 if __name__ == "__main__":
-    # login_user()
-    # halaman_awal()
-    # login_jukir()
-    # penampung_konfirmasi_checkin()
-    # konfirmasi_checkin()
-    # konfirmasi_checkout()
-    # halaman_awal()
-    menu_admin()
-    # halaman_awal()
-    # laporan_digiparking()
-    # penampil_riwayat_admin()
-    # penampung_konfirmasi_checkout()
+    halaman_awal()
+  
