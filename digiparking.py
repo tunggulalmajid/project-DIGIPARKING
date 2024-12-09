@@ -3053,11 +3053,10 @@ def tambah_jukir ():
     nama_jukir, nik_jukir, telepon_jukir, username_jukir, password_jukir = penampung_jukir()
     clear()
     cover()
-    # print (nama_jukir)
     while True :
         try :
             nama = input ("masukkan nama jukir >> ")
-            if nama == "" or nama == " " or nama in nama_jukir :
+            if len (nama) < 4 or nama in nama_jukir :
                 raise ValueError ("nama jukir tidak tersedia, atau sudah digunakan")
             else :
                 break
@@ -3065,8 +3064,33 @@ def tambah_jukir ():
             termcolor.cprint(error,"red")
             enter()
             continue
-    nik = input ("masukkan nik >> ")
-    telpon =  input ("masukkan nomor telpon >> ")
+    while True :
+        try :
+            nik = int(input ("masukkan nik >> "))
+            nik = str(nik)
+            if len (nik) < 6 or len (nik) > 10  :
+                raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karakter")
+            else :
+                break
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
+    while True :
+        try :
+            telpon =  input ("masukkan nomor telpon (83812345678) >> ")
+            telpon = str(telpon)
+            if len (telpon) < 10:
+                raise ValueError ("nomor HP minimal 10  ") 
+            elif len (telpon) > 12:
+                raise ValueError ("nomor HP minimal 10  ") 
+            else :
+                telpon = "+62" + telpon
+                break 
+        except ValueError as error :
+            termcolor.cprint(error,"red")
+            enter()
+            continue
     while True:
         try:
             username = input ("buat username jukir >> ")
@@ -3089,7 +3113,6 @@ def tambah_jukir ():
             termcolor.cprint(error,"red")
             enter()
             continue
-
     garis("═")
     with open("dataadmin/loginjukir.csv", mode="a", newline="\n") as file:
         border = ["nama", "nik", "nomor telepon", "username", "password"]
@@ -3114,7 +3137,6 @@ def update_jukir():
             break
         except ValueError :
             termcolor.cprint("masukkan pilihan berupa angka", "red")
-   
     clear()
     cover()
     border = ["NO","NAMA", "NIK", "TELEPON", "USERNAME", "PASSWORD"]
@@ -3131,17 +3153,52 @@ def update_jukir():
             elif bagian == "nama" :
                 raise ValueError ("nama tidak boleh diganti")
             elif bagian == "nik" :
-                pengganti = input ("masukkan nik pengganti pengganti  >> ")
+                while True :
+                    try :
+                        pengganti = input ("masukkan nik pengganti >> ")
+                        pengganti = str(pengganti)
+                        if len (pengganti) < 6 or len (pengganti) > 10  :
+                            raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karakter")
+                        else :
+                            break
+                    except ValueError as error :
+                        termcolor.cprint(error,"red")
+                        enter()
+                        continue
                 nik_jukir[pilih] = pengganti
                 break
             elif bagian == "telepon" :
-                pengganti = input ("masukkan nomor telepon pengganti  >> ")
+                while True :
+                    try :
+                        pengganti = input ("masukkan nomor telepon pengganti  >> ")
+                        pengganti = str(pengganti)
+                        if len (pengganti) < 10:
+                            raise ValueError ("nomor HP minimal 10  ") 
+                        elif len (pengganti) > 12:
+                            raise ValueError ("nomor HP minimal 10  ") 
+                        else :
+                            pengganti = "+62" + pengganti
+                            break 
+                    except ValueError as error :
+                        termcolor.cprint(error,"red")
+                        enter()
+                        continue
                 telepon_jukir[pilih] = pengganti
                 break
             elif bagian == "username" :
                 raise ValueError ("username tidak boleh diganti")
             elif bagian == "password" :
-                pengganti = input ("masukkan password pengganti  >> ")
+                while True :
+                    try:
+                        pengganti = input ("masukkan password pengganti  >> ")
+                        if len(pengganti) < 8 :
+                            raise ValueError ("password kurang dari 8 karakter")
+                        else :
+                            break
+                    except ValueError as error :
+                        termcolor.cprint(error,"red")
+                        enter()
+                        continue
                 password_jukir[pilih] = pengganti
                 break
         except ValueError as error :
