@@ -45,7 +45,6 @@ def transisi(b=107):
     print ("═"*b)
     time.sleep(0.5)
 
-
 def exit():
     clear()
     cover()
@@ -131,7 +130,6 @@ def registrasi ():
     print("REGISTRASI USER\n".center(107))
     garis("═")
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
-
     while True : 
         while True :
             try:
@@ -160,7 +158,7 @@ def registrasi ():
                 continue 
         while True : 
             try : 
-                tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001)>>")
+                tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001) >>")
                 tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
                 tanggal_lahir = tanggal_lahir.strftime("%d-%m-%Y") 
                 break
@@ -287,8 +285,6 @@ def login_user ():
                     indikator += 1 
             if indikator == 1 :  
                 termcolor.cprint ("login berhasil", "green")
-                if not os.path.exists(f"datauser/{nama_profil[0]}"): 
-                    os.makedirs(f"datauser/{nama_profil[0]}")
                 enter()
                 clear() 
                 transisi()
@@ -452,7 +448,6 @@ def menu_user():
                 transisi()
                 penitipan_barang_user()        
                 break
-                  
             elif pilih == 6 :
                 enter()
                 clear()
@@ -465,6 +460,7 @@ def menu_user():
             termcolor.cprint (error, "red")
             enter () 
             continue
+
 def ketentuan_digiparking ():
     clear()
     cover()
@@ -1113,6 +1109,7 @@ def penampil_kendaraan_terparkir_user():
         for a,i in enumerate(kendaraan_terparkir) :
             print (f"|{a + 1:^4}|{i[0]:^20}|{i[1]:^10}|{i[2]:^19}|{i[3]:^20}|{i[4]:^20}|{i[5]:^20}|")
             garis("═",b=121)
+            
 def penampung_booking_user ():
     booking = []
     with open (f"datauser/{nama_profil[0]}/booking.csv",mode="r") as file:
@@ -2376,7 +2373,6 @@ def penampung_peraturan():
     isi = []
     with open(f"dataadmin/ketentuan.csv", mode = "r") as file :
         reader = csv.reader(file)
-            # print (reader)
         for a in (reader) :
             if a == [] :
                 continue
@@ -2418,7 +2414,6 @@ def tambah_peraturan():
             termcolor.cprint (error,"red")
             enter()
             continue
-    
     with open (f"dataadmin/ketentuan.csv", mode="a", newline="\n") as file :
         border = [ "isi"]
         writer = csv.DictWriter(file, fieldnames=border)
@@ -2456,7 +2451,7 @@ def update_peraturan():
             termcolor.cprint(error,"red")
             enter()
             continue
-    isi[pilih]=pengganti
+    isi[pilih] = pengganti
     clear()
     cover()
     garis("═")
@@ -2841,7 +2836,6 @@ def update_user():
                             pengganti = input ("masukkan tanggal lahir sebagai pengganti (contoh : 02-02-2001)>>")
                             pengganti = dt.datetime.strptime(pengganti, "%d-%m-%Y")
                             pengganti = pengganti.strftime("%d-%m-%Y")
-
                             break 
                         except ValueError as error:
                             termcolor.cprint(error,"red")
@@ -3480,7 +3474,6 @@ def daftarkan_kendaraan_admin():
             termcolor.cprint (error,"red")
             enter()
             continue
-    
     while True :
         try :
             jenis_kendaraan = input("masukkan jenis kendaraan(mobil/motor) >> ").lower()
@@ -3552,7 +3545,6 @@ def hapus_mobil_admin():
     penampil_mobil_admin()
     pilih = (int(input("masukkan nomor data yang ingin dihapus >> ")) - 1 )
     garis("═",b=128)
-
     clear()
     cover(b=128)
     print ("")
@@ -3997,6 +3989,7 @@ def booking_admin():
             termcolor.cprint(error,"red")
             enter()
             continue
+
 def penampung_booking_admin(nama_user):
     booking = []
     with open (f"datauser/{nama_user}/booking.csv",mode="r") as file:
