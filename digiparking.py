@@ -177,7 +177,6 @@ def registrasi ():
                     raise ValueError ("nomor HP minimal 10  ") 
                 else :
                     nomorhp = "+62" + nomorhp
-                    enter()
                     break 
             except ValueError as erorr:  
                 termcolor.cprint (erorr, "red")
@@ -247,6 +246,7 @@ def registrasi ():
             writer.writerow("")
         termcolor.cprint ("registrasi berhasil, silahkan login", "green")
         enter()
+        clear()
         transisi()
         halaman_awal() 
         
