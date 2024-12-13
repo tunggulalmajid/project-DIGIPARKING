@@ -130,125 +130,126 @@ def registrasi ():
     print("REGISTRASI USER\n".center(107))
     garis("═")
     user,nik,tanggal_lahir,nomor_hp,list_username,list_password = penampung_user()
-    while True : 
-        while True :
-            try:
-                nama = input ("masukkan nama lengkap anda >> ")
-                if len(nama) < 4 :
-                    raise ValueError ("nama minimal terdiri dari 4 karakter")
-                elif nama in user :
-                    raise ValueError ("nama yang anda pilih sudah digunakan")
-                else : 
-                    break
-            except ValueError as error :
-                termcolor.cprint (error, "red")
-                enter()
-                continue
-        while True : 
-            try : 
-                nik = int(input ("masukkan NIK anda >>"))
-                nik = str(nik)
-                if len (nik) < 6 or len (nik) > 10  :
-                    raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karatkter")
-                else :
-                    break
-            except ValueError as erorr:  
-                termcolor.cprint (erorr, "red")
-                enter()
-                continue 
-        while True : 
-            try : 
-                tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001) >>")
-                tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y") 
-                tanggal_lahir = tanggal_lahir.strftime("%d-%m-%Y") 
+    while True :
+        try:
+            nama = input ("masukkan nama lengkap anda >> ")
+            if len(nama) < 4 :
+                raise ValueError ("nama minimal terdiri dari 4 karakter")
+            elif nama in user :
+                raise ValueError ("nama yang anda pilih sudah digunakan")
+            else : 
                 break
-            except ValueError as erorr:  
-                termcolor.cprint (erorr, "red")
-                enter()
-                continue 
+        except ValueError as error :
+            termcolor.cprint (error, "red")
+            enter()
+            continue
+    while True : 
+        try : 
+            nik = int(input ("masukkan NIK anda >>"))
+            nik = str(nik)
+            if len (nik) < 6 or len (nik) > 10  :
+                raise ValueError ("nik harus terdiri dari minimal 6 dan maksimal 10 karatkter")
+            else :
+                break
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
+    while True : 
+        try : 
+            tanggal_lahir = input ("masukkan tanggal lahir anda (contoh : 02-02-2001) >>")
+            tanggal_lahir = dt.datetime.strptime(tanggal_lahir, "%d-%m-%Y")
+            if tanggal_lahir.year < 1920 or tanggal_lahir.year > 2007 :
+                raise ValueError ("tanggal lahir harus berada di antara tahun 1920 dan 2007")
+            tanggal_lahir = tanggal_lahir.strftime("%d-%m-%Y") 
+            break
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
 
-        while True : 
-            try : 
-                nomorhp =  int(input ("Masukkan nomor HP (8123456789) >> "))
-                nomorhp = str(nomorhp)
-                if len (nomorhp) < 10:
-                    raise ValueError ("nomor HP minimal 10  ") 
-                elif len (nomorhp) > 12:
-                    raise ValueError ("nomor HP minimal 10  ") 
-                else :
-                    nomorhp = "+62" + nomorhp
-                    break 
-            except ValueError as erorr:  
-                termcolor.cprint (erorr, "red")
-                enter()
-                continue 
-        while True : 
-            try : 
-                username = input ("buat username baru >> ")
-                if len (username) < 4 :
-                    raise ValueError ("username harus lebih dari sama dengan 4 karakter")
-                elif username in list_username: 
-                    raise ValueError ("Username sudah digunakan") 
-                else : 
-                    break 
-            except ValueError as erorr:  
-                termcolor.cprint (erorr, "red")
-                enter()
-                continue 
-        while True : 
-            try : 
-                password = input ("buat password baru >> ")
-                if password == username or len(password) < 8 : 
-                    raise ValueError ("Password harus lebih dari 8 karakter dan tidak sama dengan username") 
-                else : 
-                    break 
-            except ValueError as error: 
-                termcolor.cprint (error, "red") 
-                enter()
-                continue
-        while True : 
-            try : 
-                password2 = input ("konfirmasi password anda >> ") 
-                if password2 != password : 
-                    raise  ValueError ("password yang anda masukkan tidak sama") 
-                else : 
-                    break 
-            except ValueError as error: 
-                termcolor.cprint (error, "red") 
-                enter()
-                continue
-        garis("═") 
-        with open ("dataadmin/datauser.csv", mode = "a", newline = "\n") as file : 
-            border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
-            writer = csv.DictWriter (file, fieldnames=border) 
-            writer.writerow ( {"nama lengkap" : nama, "nik" :  nik,"tanggal lahir" : tanggal_lahir,"nomor hp" : nomorhp, "username" : username, "password" : password2} ) 
-        os.makedirs(f"datauser/{nama}")
-        with open (f"datauser/{nama}/mobil.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/motor.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/riwayat_titip_barang.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/titipbarang.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/booking.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/parkir.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        with open (f"datauser/{nama}/riwayat_parkir_user.csv", mode="w")as file:
-            writer = csv.writer(file)
-            writer.writerow("")
-        termcolor.cprint ("registrasi berhasil, silahkan login", "green")
-        enter()
-        clear()
-        transisi()
-        halaman_awal() 
+    while True : 
+        try : 
+            nomorhp =  int(input ("Masukkan nomor HP (8123456789) >> "))
+            nomorhp = str(nomorhp)
+            if len (nomorhp) < 10:
+                raise ValueError ("nomor HP minimal 10  ") 
+            elif len (nomorhp) > 12:
+                raise ValueError ("nomor HP minimal 10  ") 
+            else :
+                nomorhp = "+62" + nomorhp
+                break 
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
+    while True : 
+        try : 
+            username = input ("buat username baru >> ")
+            if len (username) < 4 :
+                raise ValueError ("username harus lebih dari sama dengan 4 karakter")
+            elif username in list_username: 
+                raise ValueError ("Username sudah digunakan") 
+            else : 
+                break 
+        except ValueError as erorr:  
+            termcolor.cprint (erorr, "red")
+            enter()
+            continue 
+    while True : 
+        try : 
+            password = input ("buat password baru >> ")
+            if password == username or len(password) < 8 : 
+                raise ValueError ("Password harus lebih dari 8 karakter dan tidak sama dengan username") 
+            else : 
+                break 
+        except ValueError as error: 
+            termcolor.cprint (error, "red") 
+            enter()
+            continue
+    while True : 
+        try : 
+            password2 = input ("konfirmasi password anda >> ") 
+            if password2 != password : 
+                raise  ValueError ("password yang anda masukkan tidak sama") 
+            else : 
+                break 
+        except ValueError as error: 
+            termcolor.cprint (error, "red") 
+            enter()
+            continue
+    garis("═") 
+    with open ("dataadmin/datauser.csv", mode = "a", newline = "\n") as file : 
+        border = ["nama lengkap", "nik","tanggal lahir", "nomor hp", "username", "password"] 
+        writer = csv.DictWriter (file, fieldnames=border) 
+        writer.writerow ( {"nama lengkap" : nama, "nik" :  nik,"tanggal lahir" : tanggal_lahir,"nomor hp" : nomorhp, "username" : username, "password" : password2} ) 
+    os.makedirs(f"datauser/{nama}")
+    with open (f"datauser/{nama}/mobil.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/motor.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/riwayat_titip_barang.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/titipbarang.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/booking.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/parkir.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    with open (f"datauser/{nama}/riwayat_parkir_user.csv", mode="w")as file:
+        writer = csv.writer(file)
+        writer.writerow("")
+    termcolor.cprint ("registrasi berhasil, silahkan login", "green")
+    enter()
+    clear()
+    transisi()
+    halaman_awal() 
         
 def login_user ():
     global nama_profil,nik_profil,tanggal_lahir_profil,nomor_hp_profil
@@ -373,7 +374,7 @@ def login_admin():
         useradmin = []
         passadmin = []
         with open("dataadmin/loginadmin.csv", mode="r") as file:
-            reader = csv.reader(file,delimiter=",")
+            reader = csv.reader(file)
             for i in reader:
                 useradmin.append(i[0])
                 passadmin.append(i[1])
@@ -4627,3 +4628,4 @@ def riwayat_penitipan_barang_admin():
 if __name__ == "__main__":
     halaman_awal()
   
+#peh pusing banget in
