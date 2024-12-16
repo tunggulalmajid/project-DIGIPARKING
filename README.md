@@ -1,7 +1,4 @@
  # PROJEK-DIGIPARKING (TERSELESAIKAN)
-merupakan projek akhir algo semester 1. mangambil konteks parkir di stasiun dan memiliki 3 role didalamnya yaitu user, admin, dan juru parkir.
-
-PROGRESS DIGIPARKING
 ROLE : USER, JUKIR, ADMIN
 
 FITUR UMUM :
